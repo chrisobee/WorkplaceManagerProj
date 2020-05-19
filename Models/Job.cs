@@ -7,14 +7,15 @@ using System.Threading.Tasks;
 
 namespace WorkplaceManager.Models
 {
-    public class Subtask
+    public class Job
     {
         [Key]
-        public int SubtaskId { get; set; }
-        public string Name { get; set; }
-
-        [ForeignKey("Job")]
         public int JobId { get; set; }
-        public Job Job { get; set; }
+        public string Name { get; set; }
+        public DateTime? Deadline { get; set; }
+
+        [ForeignKey("Project")]
+        public int ProjectId { get; set; }
+        public Project Project { get; set; }
     }
 }

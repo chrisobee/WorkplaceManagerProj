@@ -12,9 +12,14 @@ namespace WorkplaceManager.Models
     {
         [Key]
         public int ManagerId { get; set; }
+        public string Name { get; set; }
 
         [ForeignKey("IdentityUser")]
         public string IdentityUserId { get; set; }
         public IdentityUser IdentityUser { get; set; }
+
+        [ForeignKey("Branch")]
+        public int BranchId { get; set; }
+        public Branch Branch { get; set; }
     }
 }
