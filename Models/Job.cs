@@ -13,6 +13,7 @@ namespace WorkplaceManager.Models
         public int JobId { get; set; }
         public string Name { get; set; }
         public DateTime? Deadline { get; set; }
+        public bool IsComplete { get; set; }
 
         [ForeignKey("Project")]
         public int ProjectId { get; set; }

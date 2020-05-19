@@ -5,6 +5,11 @@
     <UserSecretsId>aspnet-WorkplaceManager-ABC9E8AB-E905-4C22-9E1F-A47BE211DF65</UserSecretsId>
   </PropertyGroup>
 
+  <ItemGroup>
+    <Compile Remove="Data\Migrations\20200519212901_AddedModelTables.cs" />
+    <Compile Remove="Data\Migrations\20200519212901_AddedModelTables.Designer.cs" />
+  </ItemGroup>
+
 
   <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore" Version="3.1.1" />

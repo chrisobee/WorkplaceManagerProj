@@ -4,6 +4,7 @@ using System.Text;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using WorkplaceManager.Models;
 
 namespace WorkplaceManager.Data
 {
@@ -13,6 +14,15 @@ namespace WorkplaceManager.Data
             : base(options)
         {
         }
+
+        public DbSet<SeniorManager> SeniorManagers { get; set; }
+        public DbSet<Branch> Branches { get; set; }
+        public DbSet<Manager> Managers { get; set; }
+        public DbSet<Employee> Employees { get; set; }
+        public DbSet<Project> Projects { get; set; }
+        public DbSet<Job> Jobs { get; set; }
+        public DbSet<EmployeeJob> EmployeeJobs { get; set; }
+        public DbSet<Subtask> Subtasks { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder)
         {

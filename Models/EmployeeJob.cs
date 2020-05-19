@@ -13,11 +13,11 @@ namespace WorkplaceManager.Models
         public int EmployeeJobId { get; set; }
 
         [ForeignKey("Employee")]
-        public int EmployeeId { get; set; }
+        public int? EmployeeId { get; set; }
         public Employee Employee { get; set; }
 
         [ForeignKey("Job")]
-        public int JobId { get; set; }
+        public int? JobId { get; set; }
         public Job Job { get; set; }
     }
 }
