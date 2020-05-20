@@ -10,7 +10,6 @@ namespace WorkplaceManager.Contracts
     {
         //Board Create and Get
         Task CreateBoard(string managerName);
-        Task<List<Branch>> GetAllBoards();
         Task<Branch> GetBoardById();
 
         //List Create and Get

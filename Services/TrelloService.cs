@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using WorkplaceManager.Contracts;
 using WorkplaceManager.Models;
 using System.Net.Http;
+using Newtonsoft.Json.Linq;
 
 namespace WorkplaceManager.Services
 {
@@ -13,30 +14,44 @@ namespace WorkplaceManager.Services
     {
         public async Task CreateBoard(string managerName)
         {
-            string url = $"https://api.trello.com/1/boards/?key={APIKey.TrelloKey}&token={APIKey.TrelloToken}";
+            string url = $"https://api.trello.com/1/boards/?key={APIKey.TrelloKey}&token={APIKey.TrelloToken}&";
             HttpClient client = new HttpClient();
-            HttpContent content = new StringContent(managerName);
+            string json = JsonConvert.SerializeObject(new {name = managerName });
+            HttpContent content = new StringContent(json);
             await client.PostAsync(url, content);
         }
 
-        public Task CreateCard(string projectId)
+        public async Task CreateCard(string projectId)
         {
-            throw new NotImplementedException();
+            string url = $"https://api.trello.com/1/cards/?key={APIKey.TrelloKey}&token={APIKey.TrelloToken}&";
+            HttpClient client = new HttpClient();
+            string json = JsonConvert.SerializeObject(new { idList = projectId });
+            HttpContent content = new StringContent(json);
+            await client.PostAsync(url, content);
         }
 
-        public Task CreateList(string projectName, string branchId)
+        public async Task CreateList(string projectName, string branchId)
         {
-            throw new NotImplementedException();
+            string url = $"https://api.trello.com/1/lists?key={APIKey.TrelloKey}&token={APIKey.TrelloToken}&";
+            HttpClient client = new HttpClient();
+            string json = JsonConvert.SerializeObject(new { name = projectName, idBoard = branchId });
+            HttpContent content = new StringContent(json);
+            await client.PostAsync(url, content);
         }
 
-        public Task<List<Branch>> GetAllBoards()
+        public async Task<List<Job>> GetAllCards(string projectId)
         {
-            throw new NotImplementedException();
-        }
+            string url = $"https://api.trello.com/1/lists/{projectId}/cards?fields=name&key={APIKey.TrelloKey}&token={APIKey.TrelloToken}";
+            List<Job> listOfJobs = new List<Job>();
+            HttpClient client = new HttpClient();
 
-        public Task<List<Job>> GetAllCards(string projectId)
-        {
-            throw new NotImplementedException();
+            HttpResponseMessage response = await client.GetAsync(url);
+            string jsonResult = await response.Content.ReadAsStringAsync();
+            if (response.IsSuccessStatusCode)
+            {
+                listOfJobs = JsonConvert.DeserializeObject<List<Job>>(jsonResult);
+            }
+            return listOfJobs;
         }
 
         public Task<List<Project>> GetAllLists(string boardId)

@@ -19,7 +19,7 @@ namespace WorkplaceManager.Models
         public IdentityUser IdentityUser { get; set; }
 
         [ForeignKey("Branch")]
-        public int BranchId { get; set; }
+        public string BranchId { get; set; }
         public Branch Branch { get; set; }
     }
 }

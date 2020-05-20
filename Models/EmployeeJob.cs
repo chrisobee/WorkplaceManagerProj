@@ -17,7 +17,7 @@ namespace WorkplaceManager.Models
         public Employee Employee { get; set; }
 
         [ForeignKey("Job")]
-        public int? JobId { get; set; }
+        public string JobId { get; set; }
         public Job Job { get; set; }
     }
 }
