@@ -15,6 +15,7 @@ using Microsoft.Extensions.Hosting;
 using System.Security.Claims;
 using Microsoft.AspNetCore.Http;
 using WorkplaceManager.ActionFilters;
+using WorkplaceManager.Contracts;
 
 namespace WorkplaceManager
 {
@@ -33,6 +34,8 @@ namespace WorkplaceManager
             services.AddDbContext<ApplicationDbContext>(options =>
                 options.UseSqlServer(
                     Configuration.GetConnectionString("DefaultConnection")));
+
+            services.AddScoped<IRepositoryWrapper, RepositoryWrapper>();
 
             services.AddIdentity<IdentityUser, IdentityRole>(options => options.SignIn.RequireConfirmedAccount = false)
                 .AddEntityFrameworkStores<ApplicationDbContext>()
