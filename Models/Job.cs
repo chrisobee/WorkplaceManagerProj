@@ -10,7 +10,7 @@ namespace WorkplaceManager.Models
     public class Job
     {
         [Key]
-        public int JobId { get; set; }
+        public string JobId { get; set; }
         public string Name { get; set; }
         public DateTime? Deadline { get; set; }
         public bool IsComplete { get; set; }

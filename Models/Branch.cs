@@ -10,7 +10,7 @@ namespace WorkplaceManager.Models
     public class Branch
     { 
         [Key]
-        public int BranchId { get; set; }
+        public string BranchId { get; set; }
         public string Name { get; set; }
 
         [ForeignKey("SeniorManager")]
