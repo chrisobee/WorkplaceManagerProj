@@ -12,5 +12,14 @@ namespace WorkplaceManager.Data
         public ManagerRepository(ApplicationDbContext applicationDbContext) : base(applicationDbContext)
         {
         }
+
+        public void CreateManager(Manager manager) => Create(manager);
+
+        public async Task<Manager> GetManagerById(int? managerId)
+        {
+            var result = await FindByCondition(m => m.ManagerId == managerId);
+            var manager = result.SingleOrDefault();
+            return manager;
+        }
     }
 }

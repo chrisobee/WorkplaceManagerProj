@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+using WorkplaceManager.Contracts;
 using WorkplaceManager.Data;
 using WorkplaceManager.Models;
 using WorkplaceManager.Services;
@@ -13,11 +14,11 @@ namespace WorkplaceManager.Controllers
 {
     public class ManagersController : Controller
     {
-        private readonly ApplicationDbContext _context;
+        private IRepositoryWrapper _repo;
 
-        public ManagersController(ApplicationDbContext context)
+        public ManagersController(IRepositoryWrapper repo)
         {
-            _context = context;
+            _repo = repo;
         }
 
         // GET: Managers
@@ -36,9 +37,7 @@ namespace WorkplaceManager.Controllers
             }
 
             var manager = await _context.Managers
-                .Include(m => m.Branch)
-                .Include(m => m.IdentityUser)
-                .FirstOrDefaultAsync(m => m.ManagerId == id);
+
             if (manager == null)
             {
                 return NotFound();
@@ -50,8 +49,6 @@ namespace WorkplaceManager.Controllers
         // GET: Managers/Create
         public IActionResult Create()
         {
-            ViewData["BranchId"] = new SelectList(_context.Branches, "BranchId", "BranchId");
-            ViewData["IdentityUserId"] = new SelectList(_context.Users, "Id", "Id");
             return View();
         }
 
@@ -60,16 +57,14 @@ namespace WorkplaceManager.Controllers
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("ManagerId,Name,IdentityUserId,BranchId")] Manager manager)
+        public async Task<IActionResult> Create(Manager manager)
         {
             if (ModelState.IsValid)
             {
-                _context.Add(manager);
-                await _context.SaveChangesAsync();
+                _repo.Manager.CreateManager(manager);
+                await _repo.Save();
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["BranchId"] = new SelectList(_context.Branches, "BranchId", "BranchId", manager.BranchId);
-            ViewData["IdentityUserId"] = new SelectList(_context.Users, "Id", "Id", manager.IdentityUserId);
             return View(manager);
         }
 
