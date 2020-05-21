@@ -8,5 +8,10 @@ namespace WorkplaceManager.Contracts
 {
     public interface IBranchRepository : IRepositoryBase<Branch>
     {
+        void CreateBranch(Branch branch);
+        void UpdateBranch(Branch branch);
+        void DeleteBranch(Branch branch);
+        Task<Branch> GetBranchById(string branchId);
+        Task<List<Branch>> GetAllBranches(int? seniorManagerId);
     }
 }
