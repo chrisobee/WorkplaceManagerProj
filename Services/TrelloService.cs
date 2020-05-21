@@ -42,34 +42,42 @@ namespace WorkplaceManager.Services
         public async Task<List<Job>> GetAllCards(string projectId)
         {
             string url = $"https://api.trello.com/1/lists/{projectId}/cards?fields=name&key={APIKey.TrelloKey}&token={APIKey.TrelloToken}";
-            List<Job> listOfJobs = new List<Job>();
+            List<Job> jobs = new List<Job>();
             HttpClient client = new HttpClient();
-
             HttpResponseMessage response = await client.GetAsync(url);
             string jsonResult = await response.Content.ReadAsStringAsync();
             if (response.IsSuccessStatusCode)
             {
-                listOfJobs = JsonConvert.DeserializeObject<List<Job>>(jsonResult);
+                jobs = JsonConvert.DeserializeObject<List<Job>>(jsonResult);
             }
-            return listOfJobs;
+            return jobs;
         }
 
-        public Task<List<Project>> GetAllLists(string boardId)
+        public async Task<List<Project>> GetAllLists(string boardId)
+        {
+            string url = $"https://api.trello.com/1/boards/{boardId}/lists";
+            List<Project> projects = new List<Project>();
+            HttpClient client = new HttpClient();
+            HttpResponseMessage response = await client.GetAsync(url);
+            string jsonResult = await response.Content.ReadAsStringAsync();
+            if (response.IsSuccessStatusCode)
+            {
+                projects = JsonConvert.DeserializeObject<List<Project>>(jsonResult);
+            }
+            return projects;
+        }
+
+        public async Task<Branch> GetBoardById()
         {
             throw new NotImplementedException();
         }
 
-        public Task<Branch> GetBoardById()
+        public async Task<Job> GetCardById(string jobId)
         {
             throw new NotImplementedException();
         }
 
-        public Task<Job> GetCardById(string jobId)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<Project> GetListById(string projectId)
+        public async Task<Project> GetListById(string projectId)
         {
             throw new NotImplementedException();
         }
