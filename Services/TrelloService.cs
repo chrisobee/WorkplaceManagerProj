@@ -67,9 +67,19 @@ namespace WorkplaceManager.Services
             return projects;
         }
 
-        public async Task<Branch> GetBoardById()
+        public async Task<Branch> GetBoardById(string boardId)
         {
-            throw new NotImplementedException();
+            string url = $"https://api.trello.com/1/boards/{boardId}";
+            HttpClient client = new HttpClient();
+            Branch branch = new Branch();
+
+            HttpResponseMessage response = await client.GetAsync(url);
+            string jsonResult = await response.Content.ReadAsStringAsync();
+            if (response.IsSuccessStatusCode)
+            {
+                branch = JsonConvert.DeserializeObject<Branch>(jsonResult);
+            }
+            return branch;
         }
 
         public async Task<Job> GetCardById(string jobId)

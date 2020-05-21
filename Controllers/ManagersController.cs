@@ -23,8 +23,6 @@ namespace WorkplaceManager.Controllers
         // GET: Managers
         public async Task<IActionResult> Index()
         {
-            TrelloService service = new TrelloService();
-            List<Job> jobs = await service.GetAllCards("5eb44fc2ccf36b776b4597bd");
             var applicationDbContext = _context.Managers.Include(m => m.Branch).Include(m => m.IdentityUser);
             return View(await applicationDbContext.ToListAsync());
         }

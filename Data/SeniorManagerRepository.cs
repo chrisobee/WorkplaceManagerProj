@@ -12,5 +12,7 @@ namespace WorkplaceManager.Data
         public SeniorManagerRepository(ApplicationDbContext applicationDbContext) : base(applicationDbContext)
         {
         }
+
+        void CreateSeniorManager(SeniorManager seniorManager) => Create(seniorManager);
     }
 }

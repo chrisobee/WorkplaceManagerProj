@@ -48,7 +48,6 @@ namespace WorkplaceManager.Controllers
         // GET: SeniorManagers/Create
         public IActionResult Create()
         {
-            ViewData["IdentityUserId"] = new SelectList(_context.Users, "Id", "Id");
             return View();
         }
 
@@ -57,7 +56,7 @@ namespace WorkplaceManager.Controllers
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("SeniorManagerId,Name,IdentityUserId")] SeniorManager seniorManager)
+        public async Task<IActionResult> Create(SeniorManager seniorManager)
         {
             if (ModelState.IsValid)
             {
@@ -65,7 +64,6 @@ namespace WorkplaceManager.Controllers
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["IdentityUserId"] = new SelectList(_context.Users, "Id", "Id", seniorManager.IdentityUserId);
             return View(seniorManager);
         }
 

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using Newtonsoft.Json;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -10,6 +11,7 @@ namespace WorkplaceManager.Models
     public class Branch
     { 
         [Key]
+        [JsonProperty(PropertyName = "id")]
         public string BranchId { get; set; }
         public string Name { get; set; }
 
