@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+using WorkplaceManager.Contracts;
 using WorkplaceManager.Data;
 using WorkplaceManager.Models;
 
@@ -12,11 +13,11 @@ namespace WorkplaceManager.Controllers
 {
     public class SeniorManagersController : Controller
     {
-        private readonly ApplicationDbContext _context;
+        private IRepositoryWrapper _repo;
 
-        public SeniorManagersController(ApplicationDbContext context)
+        public SeniorManagersController(IRepositoryWrapper repo)
         {
-            _context = context;
+            _repo = repo;
         }
 
         // GET: SeniorManagers
@@ -34,9 +35,7 @@ namespace WorkplaceManager.Controllers
                 return NotFound();
             }
 
-            var seniorManager = await _context.SeniorManagers
-                .Include(s => s.IdentityUser)
-                .FirstOrDefaultAsync(m => m.SeniorManagerId == id);
+            var seniorManager = _repo.SeniorManager.GetSeniorManagerById(id);
             if (seniorManager == null)
             {
                 return NotFound();
@@ -60,8 +59,8 @@ namespace WorkplaceManager.Controllers
         {
             if (ModelState.IsValid)
             {
-                _context.Add(seniorManager);
-                await _context.SaveChangesAsync();
+                _repo.SeniorManager.CreateSeniorManager(seniorManager);
+                await _repo.Save();
                 return RedirectToAction(nameof(Index));
             }
             return View(seniorManager);
