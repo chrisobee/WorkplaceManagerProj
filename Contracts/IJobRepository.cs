@@ -8,5 +8,10 @@ namespace WorkplaceManager.Contracts
 {
     public interface IJobRepository : IRepositoryBase<Job>
     {
+        void CreateJob(Job job);
+        void UpdateJob(Job job);
+        void DeleteJob(Job job);
+        Task<Job> GetJobById(string jobId);
+        Task<List<Job>> GetAllJobs(string projectId);
     }
 }
