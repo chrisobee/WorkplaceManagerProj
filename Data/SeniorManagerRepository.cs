@@ -16,6 +16,10 @@ namespace WorkplaceManager.Data
 
         public void CreateSeniorManager(SeniorManager seniorManager) => Create(seniorManager);
 
+        public void UpdateSeniorManager(SeniorManager seniorManager) => Update(seniorManager);
+
+        public void DeleteSeniorManager(SeniorManager seniorManager) => Delete(seniorManager);
+
         public async Task<SeniorManager> GetSeniorManager(string userId)
         {
             var result = await FindByCondition(s => s.IdentityUserId == userId);

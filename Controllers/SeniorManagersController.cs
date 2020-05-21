@@ -35,7 +35,7 @@ namespace WorkplaceManager.Controllers
                 return NotFound();
             }
 
-            var seniorManager = _repo.SeniorManager.GetSeniorManagerById(id);
+            var seniorManager = await _repo.SeniorManager.GetSeniorManagerById(id);
             if (seniorManager == null)
             {
                 return NotFound();
@@ -74,12 +74,11 @@ namespace WorkplaceManager.Controllers
                 return NotFound();
             }
 
-            var seniorManager = await _context.SeniorManagers.FindAsync(id);
+            var seniorManager = await _repo.SeniorManager.GetSeniorManagerById(id);
             if (seniorManager == null)
             {
                 return NotFound();
             }
-            ViewData["IdentityUserId"] = new SelectList(_context.Users, "Id", "Id", seniorManager.IdentityUserId);
             return View(seniorManager);
         }
 
@@ -88,7 +87,7 @@ namespace WorkplaceManager.Controllers
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("SeniorManagerId,Name,IdentityUserId")] SeniorManager seniorManager)
+        public async Task<IActionResult> Edit(int id, SeniorManager seniorManager)
         {
             if (id != seniorManager.SeniorManagerId)
             {
@@ -99,12 +98,12 @@ namespace WorkplaceManager.Controllers
             {
                 try
                 {
-                    _context.Update(seniorManager);
-                    await _context.SaveChangesAsync();
+                    _repo.SeniorManager.UpdateSeniorManager(seniorManager);
+                    await _repo.Save();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!SeniorManagerExists(seniorManager.SeniorManagerId))
+                    if (!await SeniorManagerExists(seniorManager.SeniorManagerId))
                     {
                         return NotFound();
                     }
@@ -115,7 +114,6 @@ namespace WorkplaceManager.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["IdentityUserId"] = new SelectList(_context.Users, "Id", "Id", seniorManager.IdentityUserId);
             return View(seniorManager);
         }
 
@@ -127,9 +125,7 @@ namespace WorkplaceManager.Controllers
                 return NotFound();
             }
 
-            var seniorManager = await _context.SeniorManagers
-                .Include(s => s.IdentityUser)
-                .FirstOrDefaultAsync(m => m.SeniorManagerId == id);
+            var seniorManager = await _repo.SeniorManager.GetSeniorManagerById(id);
             if (seniorManager == null)
             {
                 return NotFound();
@@ -143,15 +139,23 @@ namespace WorkplaceManager.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var seniorManager = await _context.SeniorManagers.FindAsync(id);
-            _context.SeniorManagers.Remove(seniorManager);
-            await _context.SaveChangesAsync();
+            var seniorManager = await _repo.SeniorManager.GetSeniorManagerById(id);
+            _repo.SeniorManager.DeleteSeniorManager(seniorManager);
+            await _repo.Save();
             return RedirectToAction(nameof(Index));
         }
 
-        private bool SeniorManagerExists(int id)
+        private async Task<bool> SeniorManagerExists(int id)
         {
-            return _context.SeniorManagers.Any(e => e.SeniorManagerId == id);
+            try
+            {
+                var seniorManager = await _repo.SeniorManager.GetSeniorManagerById(id);
+                return true;
+            }
+            catch
+            {
+                return false;
+            }
         }
     }
 }
