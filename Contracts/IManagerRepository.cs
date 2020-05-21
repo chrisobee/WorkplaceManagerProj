@@ -9,6 +9,8 @@ namespace WorkplaceManager.Contracts
     public interface IManagerRepository : IRepositoryBase<Manager>
     {
         void CreateManager(Manager manager);
+        void UpdateManager(Manager manager);
+        void DeleteManager(Manager manager);
         Task<Manager> GetManagerById(int? managerId);
 
     }

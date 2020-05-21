@@ -14,6 +14,8 @@ namespace WorkplaceManager.Data
         }
 
         public void CreateManager(Manager manager) => Create(manager);
+        public void UpdateManager(Manager manager) => Update(manager);
+        public void DeleteManager(Manager manager) => Delete(manager);
 
         public async Task<Manager> GetManagerById(int? managerId)
         {
