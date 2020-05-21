@@ -10,7 +10,7 @@ namespace WorkplaceManager.Models
     public class Subtask
     {
         [Key]
-        public int SubtaskId { get; set; }
+        public string SubtaskId { get; set; }
         public string Name { get; set; }
         public bool IsComplete { get; set; }
 
