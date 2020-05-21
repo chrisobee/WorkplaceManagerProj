@@ -8,5 +8,10 @@ namespace WorkplaceManager.Contracts
 {
     public interface IProjectRepository : IRepositoryBase<Project>
     {
+        void CreateProject(Project project);
+        void UpdateProject(Project project);
+        void DeleteProject(Project project);
+        Task<Project> GetProjectById(string projectId);
+        Task<List<Project>> GetAllProjects(int? managerId);
     }
 }
