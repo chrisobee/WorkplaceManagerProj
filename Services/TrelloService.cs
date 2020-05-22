@@ -82,6 +82,11 @@ namespace WorkplaceManager.Services
             return branch;
         }
 
+        public Task<Branch> GetBoardById()
+        {
+            throw new NotImplementedException();
+        }
+
         public async Task<Job> GetCardById(string jobId)
         {
             throw new NotImplementedException();

@@ -12,13 +12,13 @@ namespace WorkplaceManager.Models
     {
         [Key]
         [JsonProperty(PropertyName = "id")]
-        public string JobId { get; set; }
+        public int JobId { get; set; }
         public string Name { get; set; }
         public DateTime? Deadline { get; set; }
         public bool IsComplete { get; set; }
 
         [ForeignKey("Project")]
-        public string ProjectId { get; set; }
+        public int ProjectId { get; set; }
         public Project Project { get; set; }
     }
 }

@@ -24,8 +24,7 @@ namespace WorkplaceManager.Controllers
         // GET: Managers
         public async Task<IActionResult> Index()
         {
-            var applicationDbContext = _context.Managers.Include(m => m.Branch).Include(m => m.IdentityUser);
-            return View(await applicationDbContext.ToListAsync());
+            return View();
         }
 
         // GET: Managers/Details/5

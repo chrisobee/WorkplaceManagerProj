@@ -10,12 +10,12 @@ namespace WorkplaceManager.Models
     public class Subtask
     {
         [Key]
-        public string SubtaskId { get; set; }
+        public int SubtaskId { get; set; }
         public string Name { get; set; }
         public bool IsComplete { get; set; }
 
         [ForeignKey("Job")]
-        public string JobId { get; set; }
+        public int JobId { get; set; }
         public Job Job { get; set; }
     }
 }

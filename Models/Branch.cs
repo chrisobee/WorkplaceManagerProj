@@ -12,7 +12,7 @@ namespace WorkplaceManager.Models
     { 
         [Key]
         [JsonProperty(PropertyName = "id")]
-        public string BranchId { get; set; }
+        public int BranchId { get; set; }
         public string Name { get; set; }
 
         [ForeignKey("SeniorManager")]

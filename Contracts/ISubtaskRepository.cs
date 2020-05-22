@@ -11,7 +11,7 @@ namespace WorkplaceManager.Contracts
         void CreateSubtask(Subtask subtask);
         void UpdateSubtask(Subtask subtask);
         void DeleteSubtask(Subtask subtask);
-        Task<Subtask> GetSubtaskById(string subtaskId);
-        Task<List<Subtask>> GetAllSubtasks(string jobId);
+        Task<Subtask> GetSubtaskById(int subtaskId);
+        Task<List<Subtask>> GetAllSubtasks(int jobId);
     }
 }

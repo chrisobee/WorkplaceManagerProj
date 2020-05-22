@@ -11,7 +11,7 @@ namespace WorkplaceManager.Contracts
         void CreateBranch(Branch branch);
         void UpdateBranch(Branch branch);
         void DeleteBranch(Branch branch);
-        Task<Branch> GetBranchById(string branchId);
+        Task<Branch> GetBranchById(int branchId);
         Task<List<Branch>> GetAllBranches(int? seniorManagerId);
     }
 }

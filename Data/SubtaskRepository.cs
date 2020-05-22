@@ -18,14 +18,14 @@ namespace WorkplaceManager.Data
 
         public void DeleteSubtask(Subtask subtask) => Delete(subtask);
 
-        public async Task<List<Subtask>> GetAllSubtasks(string jobId)
+        public async Task<List<Subtask>> GetAllSubtasks(int jobId)
         {
             var results = await FindByCondition(s => s.JobId == jobId);
             var subtasks = results.Include(s => s.Job).ToList();
             return subtasks;
         }
 
-        public async Task<Subtask> GetSubtaskById(string subtaskId)
+        public async Task<Subtask> GetSubtaskById(int subtaskId)
         {
             var result = await FindByCondition(s => s.SubtaskId == subtaskId);
             var subtask = result.Include(s => s.Job).SingleOrDefault();

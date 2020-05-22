@@ -18,14 +18,14 @@ namespace WorkplaceManager.Data
 
         public void DeleteJob(Job job) => Delete(job);
 
-        public async Task<List<Job>> GetAllJobs(string projectId)
+        public async Task<List<Job>> GetAllJobs(int projectId)
         {
             var results = await FindByCondition(j => j.ProjectId == projectId);
             var jobs = results.Include(j => j.Project).ToList();
             return jobs;
         }
 
-        public async Task<Job> GetJobById(string jobId)
+        public async Task<Job> GetJobById(int jobId)
         {
             var result = await FindByCondition(j => j.JobId == jobId);
             var job = result.Include(j => j.Project).SingleOrDefault();

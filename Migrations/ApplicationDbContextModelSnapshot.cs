@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using WorkplaceManager.Data;
 
-namespace WorkplaceManager.Data.Migrations
+namespace WorkplaceManager.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
     partial class ApplicationDbContextModelSnapshot : ModelSnapshot
@@ -15,7 +15,7 @@ namespace WorkplaceManager.Data.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "3.1.1")
+                .HasAnnotation("ProductVersion", "3.1.2")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128)
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
@@ -49,21 +49,21 @@ namespace WorkplaceManager.Data.Migrations
                         new
                         {
                             Id = "3d0149f5-a07c-49f3-a71b-64339d768a3c",
-                            ConcurrencyStamp = "a8737101-cc05-465f-a3a8-da88d1fd121e",
+                            ConcurrencyStamp = "620065d2-5a44-4a04-97d0-80f1999fa2ba",
                             Name = "Senior Manager",
                             NormalizedName = "SENIOR MANAGER"
                         },
                         new
                         {
                             Id = "1044e8d0-e0d0-4ec9-822e-e9c12f94f8bd",
-                            ConcurrencyStamp = "e45fe3bc-d0d8-4fb1-92e7-5ecc243547d0",
+                            ConcurrencyStamp = "f9229c64-c523-446f-84e8-c7d2231fac94",
                             Name = "Manager",
                             NormalizedName = "MANAGER"
                         },
                         new
                         {
                             Id = "1717911b-db92-44c5-b150-e4ab5e8664a0",
-                            ConcurrencyStamp = "89b5ae9d-37e3-4134-b272-046a88fb933e",
+                            ConcurrencyStamp = "ce5ddbc0-8e09-4941-827f-7369abaa80b0",
                             Name = "Employee",
                             NormalizedName = "EMPLOYEE"
                         });
@@ -296,7 +296,7 @@ namespace WorkplaceManager.Data.Migrations
                     b.Property<int?>("EmployeeId")
                         .HasColumnType("int");
 
-                    b.Property<int?>("JobId")
+                    b.Property<int>("JobId")
                         .HasColumnType("int");
 
                     b.HasKey("EmployeeJobId");
@@ -509,7 +509,9 @@ namespace WorkplaceManager.Data.Migrations
 
                     b.HasOne("WorkplaceManager.Models.Job", "Job")
                         .WithMany()
-                        .HasForeignKey("JobId");
+                        .HasForeignKey("JobId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("WorkplaceManager.Models.Job", b =>

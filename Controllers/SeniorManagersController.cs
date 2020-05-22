@@ -23,8 +23,7 @@ namespace WorkplaceManager.Controllers
         // GET: SeniorManagers
         public async Task<IActionResult> Index()
         {
-            var applicationDbContext = _context.SeniorManagers.Include(s => s.IdentityUser);
-            return View(await applicationDbContext.ToListAsync());
+            return View();
         }
 
         // GET: SeniorManagers/Details/5
