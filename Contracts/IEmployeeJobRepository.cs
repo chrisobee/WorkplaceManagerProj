@@ -8,5 +8,6 @@ namespace WorkplaceManager.Contracts
 {
     public interface IEmployeeJobRepository : IRepositoryBase<EmployeeJob>
     {
+        void CreateEmployeeJob(int employeeId, int jobId);
     }
 }

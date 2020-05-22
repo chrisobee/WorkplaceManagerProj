@@ -12,5 +12,15 @@ namespace WorkplaceManager.Data
         public EmployeeJobRepository(ApplicationDbContext applicationDbContext) : base(applicationDbContext)
         {
         }
+
+        public void CreateEmployeeJob(int employeeId, int jobId)
+        {
+            EmployeeJob employeeJob = new EmployeeJob()
+            {
+                EmployeeId = employeeId,
+                JobId = jobId
+            };
+            Create(employeeJob);
+        }
     }
 }
