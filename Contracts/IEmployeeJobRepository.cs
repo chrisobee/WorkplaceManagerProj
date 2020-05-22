@@ -9,5 +9,6 @@ namespace WorkplaceManager.Contracts
     public interface IEmployeeJobRepository : IRepositoryBase<EmployeeJob>
     {
         void CreateEmployeeJob(int employeeId, int jobId);
+        Task<List<Job>> FindAssignedTasks(int employeeId);
     }
 }

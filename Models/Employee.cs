@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Identity;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
@@ -10,6 +11,8 @@ namespace WorkplaceManager.Models
         public int EmployeeId { get; set; }
         public string Name { get; set; }
         public double QualityOfWork { get; set; }
+        [NotMapped]
+        public List<Job> AssignedJobs { get; set; }
 
         [ForeignKey("IdentityUser")]
         public string IdentityUserId { get; set; }

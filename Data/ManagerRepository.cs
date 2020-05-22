@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.EntityFrameworkCore;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -20,7 +21,14 @@ namespace WorkplaceManager.Data
         public async Task<Manager> GetManagerById(int? managerId)
         {
             var result = await FindByCondition(m => m.ManagerId == managerId);
-            var manager = result.SingleOrDefault();
+            var manager = result.Include(m => m.IdentityUser).SingleOrDefault();
+            return manager;
+        }
+
+        public async Task<Manager> GetManagerByUserId(string userId)
+        {
+            var result = await FindByCondition(m => m.IdentityUserId == userId);
+            var manager = result.Include(m => m.IdentityUser).SingleOrDefault();
             return manager;
         }
     }

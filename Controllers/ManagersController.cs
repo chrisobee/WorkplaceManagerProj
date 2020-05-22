@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -9,6 +10,7 @@ using WorkplaceManager.Contracts;
 using WorkplaceManager.Data;
 using WorkplaceManager.Models;
 using WorkplaceManager.Services;
+using WorkplaceManager.ViewModels;
 
 namespace WorkplaceManager.Controllers
 {
@@ -20,12 +22,20 @@ namespace WorkplaceManager.Controllers
         {
             _repo = repo;
         }
+        
+        //ALL METHODS WITH VIEWS**
 
         // GET: Managers
         public async Task<IActionResult> Index()
         {
-
-            return View();
+            ManagerIndexVM indexVM = new ManagerIndexVM();
+            indexVM.Manager = await GetCurrentUser();
+            indexVM.Employees = await _repo.Employee.GetAllEmployees(indexVM.Manager.ManagerId);
+            foreach(Employee employee in indexVM.Employees)
+            {
+                employee.AssignedJobs = await _repo.EmployeeJob.FindAssignedTasks(employee.EmployeeId);
+            }
+            return View(indexVM);
         }
 
         // GET: Managers/Details/5
@@ -158,6 +168,14 @@ namespace WorkplaceManager.Controllers
             {
                 return false;
             }
+        }
+
+        //HELPER METHODS**
+        public async Task<Manager> GetCurrentUser()
+        {
+            var userId = this.User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var manager = await _repo.Manager.GetManagerByUserId(userId);
+            return manager;
         }
     }
 }

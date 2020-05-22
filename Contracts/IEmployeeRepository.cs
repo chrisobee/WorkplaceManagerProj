@@ -13,5 +13,6 @@ namespace WorkplaceManager.Contracts
         void DeleteEmployee(Employee employee);
         Task<Employee> GetEmployeeById(int? id);
         Task<Employee> GetEmployeeWithUserId(string userId);
+        Task<List<Employee>> GetAllEmployees(int managerId);
     }
 }

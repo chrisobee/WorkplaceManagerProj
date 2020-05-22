@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.EntityFrameworkCore;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -20,15 +21,22 @@ namespace WorkplaceManager.Data
         public async Task<Employee> GetEmployeeById(int? employeeId)
         {
             var result = await FindByCondition(e => e.EmployeeId == employeeId);
-            var employee = result.SingleOrDefault();
+            var employee = result.Include(e => e.IdentityUser).SingleOrDefault();
             return employee;
         }
 
         public async Task<Employee> GetEmployeeWithUserId(string userId)
         {
             var result = await FindByCondition(e => e.IdentityUserId == userId);
-            var employee = result.SingleOrDefault();
+            var employee = result.Include(e => e.IdentityUser).SingleOrDefault();
             return employee;
+        }
+
+        public async Task<List<Employee>> GetAllEmployees(int managerId)
+        {
+            var results = await FindByCondition(e => e.ManagerId == managerId);
+            List<Employee> employees = results.Include(e => e.IdentityUser).ToList();
+            return employees;
         }
 
         

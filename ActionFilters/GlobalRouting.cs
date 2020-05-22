@@ -23,15 +23,15 @@ namespace WorkplaceManager.ActionFilters
             {
                 if (_claimsPrincipal.IsInRole("Manager"))
                 {
-                    context.Result = new RedirectToActionResult("Index", "Manager", null);
+                    context.Result = new RedirectToActionResult("Index", "Managers", null);
                 }
                 else if(_claimsPrincipal.IsInRole("Senior Manager"))
                 {
-                    context.Result = new RedirectToActionResult("Index", "SeniorManager", null);
+                    context.Result = new RedirectToActionResult("Index", "SeniorManagers", null);
                 }
                 else if (_claimsPrincipal.IsInRole("Employee"))
                 {
-                    context.Result = new RedirectToActionResult("Index", "Employee", null);
+                    context.Result = new RedirectToActionResult("Index", "Employees", null);
                 }
             }
         }
