@@ -26,6 +26,7 @@
         <a type="btn btn-primary" asp-action="CreateEmployee">Add New Employee</a>
     </div>
     <div class="col-md-9">
+        <a asp-action="Create" asp-controller="Projects">Add New Project</a>
         @foreach(Project project in Model.Projects)
         {
             <div class="row">
@@ -39,8 +40,9 @@
                         <div class="card-body">
                             @foreach(Job job in project.Jobs)
                             {
-                                <a asp-action="Details" asp-controller="Job"
+                                <a asp-action="Details" asp-controller="Jobs" asp-route-id="@job.JobId">@job.Name</a>
                             }
+                            <a asp-action="Create" asp-controller="Jobs">Add Job</a>
                         </div>
                     </div>
                 </div>

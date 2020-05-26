@@ -11,17 +11,17 @@ using WorkplaceManager.Models;
 
 namespace WorkplaceManager.Controllers
 {
-    public class JobsController : Controller
+    public class ProjectsController : Controller
     {
         private readonly ApplicationDbContext _context;
         private readonly IRepositoryWrapper _repo;
-
-        public JobsController(IRepositoryWrapper repo)
+        public ProjectsController(ApplicationDbContext context, IRepositoryWrapper repo)
         {
+            _context = context;
             _repo = repo;
         }
 
-        // GET: Jobs/Details/5
+        // GET: Projects/Details/5
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
@@ -29,39 +29,38 @@ namespace WorkplaceManager.Controllers
                 return NotFound();
             }
 
-            var job = await _repo.Job.GetJobById(id);
-
-            if (job == null)
+            var project = await _repo.Project.GetProjectById(id);
+            if (project == null)
             {
                 return NotFound();
             }
 
-            return View(job);
+            return View(project);
         }
 
-        // GET: Jobs/Create
+        // GET: Projects/Create
         public IActionResult Create()
         {
             return View();
         }
 
-        // POST: Jobs/Create
+        // POST: Projects/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to, for 
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(Job job)
+        public async Task<IActionResult> Create(Project project)
         {
             if (ModelState.IsValid)
             {
-                _repo.Job.CreateJob(job);
+                _repo.Project.CreateProject(project);
                 await _repo.Save();
                 return RedirectToAction("Index", "Managers");
             }
-            return View(job);
+            return View(project);
         }
 
-        // GET: Jobs/Edit/5
+        // GET: Projects/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -69,22 +68,22 @@ namespace WorkplaceManager.Controllers
                 return NotFound();
             }
 
-            var job = await _repo.Job.GetJobById(id);
-            if (job == null)
+            var project = await _repo.Project.GetProjectById(id);
+            if (project == null)
             {
                 return NotFound();
             }
-            return View(job);
+            return View(project);
         }
 
-        // POST: Jobs/Edit/5
+        // POST: Projects/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to, for 
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("JobId,Name,Deadline,IsComplete,ProjectId")] Job job)
+        public async Task<IActionResult> Edit(int id, Project project)
         {
-            if (id != job.JobId)
+            if (id != project.ProjectId)
             {
                 return NotFound();
             }
@@ -93,12 +92,12 @@ namespace WorkplaceManager.Controllers
             {
                 try
                 {
-                    _repo.Job.UpdateJob(job);
+                    _repo.Project.UpdateProject(project);
                     await _repo.Save();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!JobExists(job.JobId))
+                    if (!ProjectExists(project.ProjectId))
                     {
                         return NotFound();
                     }
@@ -109,10 +108,10 @@ namespace WorkplaceManager.Controllers
                 }
                 return RedirectToAction("Index", "Managers");
             }
-            return View(job);
+            return View(project);
         }
 
-        // GET: Jobs/Delete/5
+        // GET: Projects/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -120,31 +119,32 @@ namespace WorkplaceManager.Controllers
                 return NotFound();
             }
 
-            var job = await _repo.Job.GetJobById(id);
-            if (job == null)
+            var project = await _repo.Project.GetProjectById(id);
+
+            if (project == null)
             {
                 return NotFound();
             }
 
-            return View(job);
+            return View(project);
         }
 
-        // POST: Jobs/Delete/5
+        // POST: Projects/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var job = await _repo.Job.GetJobById(id);
-            _repo.Job.DeleteJob(job);
+            var project = await _repo.Project.GetProjectById(id);
+            _repo.Project.DeleteProject(project);
             await _repo.Save();
             return RedirectToAction("Index", "Managers");
         }
 
-        private async Task<bool> JobExists(int id)
+        private async Task<bool> ProjectExists(int id)
         {
             try
             {
-                await _repo.Job.GetJobById(id);
+                await _repo.Project.GetProjectById(id);
                 return true;
             }
             catch

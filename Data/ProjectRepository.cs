@@ -25,7 +25,7 @@ namespace WorkplaceManager.Data
             return projects;
         }
 
-        public async Task<Project> GetProjectById(int projectId)
+        public async Task<Project> GetProjectById(int? projectId)
         {
             var result = await FindByCondition(p => p.ProjectId == projectId);
             var project = result.Include(p => p.Manager).SingleOrDefault();

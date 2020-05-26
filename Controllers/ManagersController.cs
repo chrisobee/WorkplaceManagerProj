@@ -39,6 +39,7 @@ namespace WorkplaceManager.Controllers
             {
                 return RedirectToAction("Create");
             }
+
             indexVM.Manager = manager;
             indexVM.Employees = await _repo.Employee.GetAllEmployees(indexVM.Manager.ManagerId);
             indexVM.Projects = await _repo.Project.GetAllProjects(manager.ManagerId);

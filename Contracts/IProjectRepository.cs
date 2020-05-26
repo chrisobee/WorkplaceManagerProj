@@ -11,7 +11,7 @@ namespace WorkplaceManager.Contracts
         void CreateProject(Project project);
         void UpdateProject(Project project);
         void DeleteProject(Project project);
-        Task<Project> GetProjectById(int projectId);
+        Task<Project> GetProjectById(int? projectId);
         Task<List<Project>> GetAllProjects(int? managerId);
     }
 }
