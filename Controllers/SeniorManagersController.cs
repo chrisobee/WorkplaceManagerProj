@@ -176,7 +176,7 @@ namespace WorkplaceManager.Controllers
             _repo.Manager.CreateManager(manager);
             string randomInts = GetRandomIntsForPassword();
             await AddManagerIdentity(manager, randomInts);
-            _repo.Save();
+            await _repo.Save();
 
             return RedirectToAction("DetailsForManager", new { managerId = manager.ManagerId, randomInts });
         }

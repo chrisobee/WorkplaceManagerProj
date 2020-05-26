@@ -12,7 +12,8 @@ namespace WorkplaceManager.Models
     {
         [Key]
         public int SeniorManagerId { get; set; }
-        public string Name { get; set; }
+        public string FirstName { get; set; }
+        public string LastName { get; set; }
 
         [ForeignKey("IdentityUser")]
         public string IdentityUserId { get; set; }

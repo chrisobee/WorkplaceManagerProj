@@ -205,7 +205,7 @@ namespace WorkplaceManager.Controllers
         public async Task<IActionResult> DetailsOfEmployee(int employeeId, string randomInts)
         {
             var employee = await _repo.Employee.GetEmployeeById(employeeId);
-            var password = $"{employee.FirstName[0]}{employee.LastName[0]}{randomInts}";
+            var password = $"{employee.FirstName[0]}{employee.LastName[0].ToString().ToLower()}-{randomInts}";
             ViewBag.password = password;
             return View(employee);
         }
@@ -219,12 +219,18 @@ namespace WorkplaceManager.Controllers
             string email = $"{employee.FirstName}{employee.LastName}@gmail.com";
 
             //Generate Random password
-            string password = $"{employee.FirstName[0]}{employee.LastName[0]}{randomInts}";
+            string password = $"{employee.FirstName[0]}{employee.LastName[0].ToString().ToLower()}-{randomInts}";
 
             //Add Employee info to user table
             var user = new IdentityUser { UserName = email, Email = email };
-            await _userManager.CreateAsync(user, password);
-            await _userManager.AddToRoleAsync(user, "Employee");
+            var result = await _userManager.CreateAsync(user, password);
+            if (result.Succeeded)
+            {
+                if(await _roleManager.RoleExistsAsync("Employee"))
+                {
+                    await _userManager.AddToRoleAsync(user, "Employee");
+                }
+            }
         }
 
         public string GetRandomIntsForPassword()
