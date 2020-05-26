@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -13,7 +14,6 @@ namespace WorkplaceManager.Controllers
 {
     public class JobsController : Controller
     {
-        private readonly ApplicationDbContext _context;
         private readonly IRepositoryWrapper _repo;
 
         public JobsController(IRepositoryWrapper repo)
@@ -40,8 +40,9 @@ namespace WorkplaceManager.Controllers
         }
 
         // GET: Jobs/Create
-        public IActionResult Create()
+        public IActionResult Create(int? projectId)
         {
+            ViewBag.projectId = projectId;
             return View();
         }
 
@@ -50,10 +51,11 @@ namespace WorkplaceManager.Controllers
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(Job job)
+        public async Task<IActionResult> Create(Job job, int projectId)
         {
             if (ModelState.IsValid)
             {
+                job.ProjectId = projectId;
                 _repo.Job.CreateJob(job);
                 await _repo.Save();
                 return RedirectToAction("Index", "Managers");
@@ -98,7 +100,7 @@ namespace WorkplaceManager.Controllers
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!JobExists(job.JobId))
+                    if (!await JobExists(job.JobId))
                     {
                         return NotFound();
                     }
@@ -151,6 +153,14 @@ namespace WorkplaceManager.Controllers
             {
                 return false;
             }
+        }
+
+        //HELPER METHODS**
+        public async Task<Manager> GetManager()
+        {
+            string userId = this.User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var manager = await _repo.Manager.GetManagerByUserId(userId);
+            return manager;
         }
     }
 }

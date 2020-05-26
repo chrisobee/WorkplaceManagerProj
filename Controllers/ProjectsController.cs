@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -13,11 +14,9 @@ namespace WorkplaceManager.Controllers
 {
     public class ProjectsController : Controller
     {
-        private readonly ApplicationDbContext _context;
         private readonly IRepositoryWrapper _repo;
-        public ProjectsController(ApplicationDbContext context, IRepositoryWrapper repo)
+        public ProjectsController(IRepositoryWrapper repo)
         {
-            _context = context;
             _repo = repo;
         }
 
@@ -53,6 +52,8 @@ namespace WorkplaceManager.Controllers
         {
             if (ModelState.IsValid)
             {
+                var manager = await GetManager();
+                project.ManagerId = manager.ManagerId; 
                 _repo.Project.CreateProject(project);
                 await _repo.Save();
                 return RedirectToAction("Index", "Managers");
@@ -97,7 +98,7 @@ namespace WorkplaceManager.Controllers
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!ProjectExists(project.ProjectId))
+                    if (!await ProjectExists(project.ProjectId))
                     {
                         return NotFound();
                     }
@@ -151,6 +152,14 @@ namespace WorkplaceManager.Controllers
             {
                 return false;
             }
+        }
+
+        //HELPER METHODS**
+        public async Task<Manager> GetManager()
+        {
+            string userId = this.User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var manager = await _repo.Manager.GetManagerByUserId(userId);
+            return manager;
         }
     }
 }
