@@ -26,6 +26,10 @@ namespace WorkplaceManager.Controllers
         {
             var userId = this.User.FindFirstValue(ClaimTypes.NameIdentifier);
             var employee = await _repo.Employee.GetEmployeeWithUserId(userId);
+            if(employee == null)
+            {
+                return RedirectToAction("Create");
+            }
             return View(employee);
         }
 
@@ -48,7 +52,7 @@ namespace WorkplaceManager.Controllers
 
         // GET: Employees/Create
         public IActionResult Create()
-        { 
+        {
             return View();
         }
 
@@ -63,7 +67,7 @@ namespace WorkplaceManager.Controllers
             {
                 _repo.Employee.CreateEmployee(employee);
                 await _repo.Save();
-                return RedirectToAction(nameof(Index));
+                return RedirectToAction("RequireLink", new { employeeId = employee.EmployeeId});
             }
             return View(employee);
         }
@@ -158,6 +162,14 @@ namespace WorkplaceManager.Controllers
             {
                 return false;
             }
+        }
+
+        //HELPER METHODS**
+        public async Task<Employee> GetCurrentUser()
+        {
+            var userId = this.User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var employee = await _repo.Employee.GetEmployeeWithUserId(userId);
+            return employee;
         }
     }
 }

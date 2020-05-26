@@ -9,7 +9,8 @@ namespace WorkplaceManager.Models
     {
         [Key]
         public int EmployeeId { get; set; }
-        public string Name { get; set; }
+        public string FirstName { get; set; }
+        public string LastName { get; set; }
         public double QualityOfWork { get; set; }
         [NotMapped]
         public List<Job> AssignedJobs { get; set; }
@@ -19,7 +20,7 @@ namespace WorkplaceManager.Models
         public IdentityUser IdentityUser { get; set; }
 
         [ForeignKey("Manager")]
-        public int ManagerId { get; set; }
+        public int? ManagerId { get; set; }
         public Manager Manager { get; set; }
     }
 }

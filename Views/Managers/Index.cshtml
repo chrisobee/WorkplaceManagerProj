@@ -12,13 +12,11 @@
         @foreach(Employee employee in Model.Employees)
         {
             <div class="row">
-                <h4>@employee.Name</h4>
-                @foreach(Job job in employee.AssignedJobs)
-                {
-                    <h6>@job.Name</h6>
-                }
+                <h4>@employee.FirstName</h4>
+                <button type="button" class="btn btn-secondary" data-toggle="popover" data-placement="right" data-content="@employee.AssignedJobs.Select(j => j.Name)" data-original-title="Assigned Jobs">Assigned Jobs</button>
             </div>
         }
+        <a type="btn btn-primary" asp-action="CreateEmployee">Add New Employee</a>
     </div>
     <div class="col-md-9">
 

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
@@ -17,10 +18,14 @@ namespace WorkplaceManager.Controllers
     public class ManagersController : Controller
     {
         private IRepositoryWrapper _repo;
+        private readonly RoleManager<IdentityRole> _roleManager;
+        private readonly UserManager<IdentityUser> _userManager;
 
-        public ManagersController(IRepositoryWrapper repo)
+        public ManagersController(IRepositoryWrapper repo, RoleManager<IdentityRole> roleManager, UserManager<IdentityUser> userManager)
         {
             _repo = repo;
+            _roleManager = roleManager;
+            _userManager = userManager;
         }
         
         //ALL METHODS WITH VIEWS**
@@ -29,7 +34,12 @@ namespace WorkplaceManager.Controllers
         public async Task<IActionResult> Index()
         {
             ManagerIndexVM indexVM = new ManagerIndexVM();
-            indexVM.Manager = await GetCurrentUser();
+            var manager = await GetCurrentUser();
+            if(manager == null)
+            {
+                return RedirectToAction("Create");
+            }
+            indexVM.Manager = manager;
             indexVM.Employees = await _repo.Employee.GetAllEmployees(indexVM.Manager.ManagerId);
             foreach(Employee employee in indexVM.Employees)
             {
@@ -170,7 +180,64 @@ namespace WorkplaceManager.Controllers
             }
         }
 
+        //GET: Create view for Creating Employee
+        public async Task<IActionResult> CreateEmployee()
+        {
+            var manager = await GetCurrentUser();
+            ViewBag.managerId = manager.ManagerId;
+            return View();
+        }
+
+        //POST: Post for creation of Employee
+        [HttpPost]
+        public async Task<IActionResult> CreateEmployee(Employee employee, int? managerId)
+        {
+            employee.ManagerId = managerId;
+            _repo.Employee.CreateEmployee(employee);
+            string randomInts = GetRandomIntsForPassword();
+            await AddEmployeeIdentity(employee, randomInts);
+            await _repo.Save();
+
+            return RedirectToAction("DetailsOfEmployee", new { employeeId = employee.EmployeeId, randomInts });
+        }
+
+        //GET: Details of employee to allow manager to get email and password and send it to employee
+        public async Task<IActionResult> DetailsOfEmployee(int employeeId, string randomInts)
+        {
+            var employee = await _repo.Employee.GetEmployeeById(employeeId);
+            var password = $"{employee.FirstName[0]}{employee.LastName[0]}{randomInts}";
+            ViewBag.password = password;
+            return View(employee);
+        }
+
+
         //HELPER METHODS**
+
+        public async Task AddEmployeeIdentity(Employee employee, string randomInts)
+        {
+            //Sets employee email with employee name
+            string email = $"{employee.FirstName}{employee.LastName}@gmail.com";
+
+            //Generate Random password
+            string password = $"{employee.FirstName[0]}{employee.LastName[0]}{randomInts}";
+
+            //Add Employee info to user table
+            var user = new IdentityUser { UserName = email, Email = email };
+            await _userManager.CreateAsync(user, password);
+            await _userManager.AddToRoleAsync(user, "Employee");
+        }
+
+        public string GetRandomIntsForPassword()
+        {
+            Random rand = new Random();
+            string randomInts = "";
+            for(int i = 0; i < 5; i++)
+            {
+                int tempNum = rand.Next(0, 9);
+                randomInts += tempNum;
+            }
+            return randomInts;
+        }
         public async Task<Manager> GetCurrentUser()
         {
             var userId = this.User.FindFirstValue(ClaimTypes.NameIdentifier);
