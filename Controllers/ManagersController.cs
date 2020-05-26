@@ -234,7 +234,7 @@ namespace WorkplaceManager.Controllers
             for(int i = 0; i < 5; i++)
             {
                 int tempNum = rand.Next(0, 9);
-                randomInts += tempNum;
+                randomInts += tempNum.ToString();
             }
             return randomInts;
         }

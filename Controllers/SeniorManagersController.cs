@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
@@ -14,10 +16,14 @@ namespace WorkplaceManager.Controllers
     public class SeniorManagersController : Controller
     {
         private IRepositoryWrapper _repo;
+        private readonly RoleManager<IdentityRole> _roleManager;
+        private readonly UserManager<IdentityUser> _userManager;
 
-        public SeniorManagersController(IRepositoryWrapper repo)
+        public SeniorManagersController(IRepositoryWrapper repo, RoleManager<IdentityRole> roleManager, UserManager<IdentityUser> userManager)
         {
             _repo = repo;
+            _roleManager = roleManager;
+            _userManager = userManager;
         }
 
         // GET: SeniorManagers
@@ -155,6 +161,65 @@ namespace WorkplaceManager.Controllers
             {
                 return false;
             }
+        }
+
+        //GET: Method to create manager
+        public async Task<IActionResult> CreateManager()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> CreateManager(Manager manager)
+        {
+            _repo.Manager.CreateManager(manager);
+            string randomInts = GetRandomIntsForPassword();
+            await AddManagerIdentity(manager, randomInts);
+            await _repo.Save();
+
+            return RedirectToAction("DetailsForManager", new { managerId = manager.ManagerId, randomInts });
+        }
+
+        //GET: DetailsForManager
+        public async Task<IActionResult> DetailsForManager(int? managerId, string randomInts)
+        {
+            Manager manager = await _repo.Manager.GetManagerById(managerId);
+            string password = $"{manager.FirstName[0]}{manager.LastName[0]}{randomInts}";
+            ViewBag.password = password;
+            return View(manager);
+        }
+
+        //HELPER METHODS**
+        public async Task<SeniorManager> GetCurrentSeniorManager()
+        {
+            string userId = this.User.FindFirstValue(ClaimTypes.NameIdentifier);
+            SeniorManager seniorManager = await _repo.SeniorManager.GetSeniorManager(userId);
+            return seniorManager;
+        }
+        public async Task AddManagerIdentity(Manager manager, string randomInts)
+        {
+            //Sets Manager email with Manager name
+            string email = $"{manager.FirstName}{manager.LastName}@gmail.com";
+
+            //Generate Random password
+            string password = $"{manager.FirstName[0]}{manager.LastName[0]}{randomInts}";
+
+            //Add Manager info to user table
+            var user = new IdentityUser { UserName = email, Email = email };
+            await _userManager.CreateAsync(user, password);
+            await _userManager.AddToRoleAsync(user, "Manager");
+        }
+
+        public string GetRandomIntsForPassword()
+        {
+            Random rand = new Random();
+            string randomInts = "";
+            for (int i = 0; i < 5; i++)
+            {
+                int tempNum = rand.Next(0, 9);
+                randomInts += tempNum.ToString();
+            }
+            return randomInts;
         }
     }
 }
