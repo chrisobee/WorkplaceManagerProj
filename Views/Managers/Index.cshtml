@@ -9,16 +9,42 @@
 
 <div class="row">
     <div class="col-md-3">
-        @foreach(Employee employee in Model.Employees)
+        @if (Model.Employees.Count == 0)
         {
-            <div class="row">
-                <h4>@employee.FirstName</h4>
-                <button type="button" class="btn btn-secondary" data-toggle="popover" data-placement="right" data-content="@employee.AssignedJobs.Select(j => j.Name)" data-original-title="Assigned Jobs">Assigned Jobs</button>
-            </div>
+            <h5>No Employees Added Yet!</h5>
+        }
+        else
+        {
+            @foreach (Employee employee in Model.Employees)
+            {
+                <div class="row">
+                    <h6>@employee.FirstName</h6>
+                    <button type="button" class="btn btn-secondary" data-toggle="popover" data-placement="right" data-content="@employee.AssignedJobs.Select(j => j.Name)" data-original-title="Assigned Jobs">Assigned Jobs</button>
+                </div>
+            }
         }
         <a type="btn btn-primary" asp-action="CreateEmployee">Add New Employee</a>
     </div>
     <div class="col-md-9">
-
+        @foreach(Project project in Model.Projects)
+        {
+            <div class="row">
+                <div class="col-md-3">
+                    <h4>@project.Name</h4>
+                </div>
+                <div class="col-md-3"></div>
+                <div class="col-md-6">
+                    <div class="card text-white bg-primary mb-3" style="max-width: 20rem;">
+                        <div class="card-header">Jobs</div>
+                        <div class="card-body">
+                            @foreach(Job job in project.Jobs)
+                            {
+                                <a asp-action="Details" asp-controller="Job"
+                            }
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }
     </div>
 </div>

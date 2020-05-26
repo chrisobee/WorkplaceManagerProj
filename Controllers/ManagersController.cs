@@ -41,10 +41,10 @@ namespace WorkplaceManager.Controllers
             }
             indexVM.Manager = manager;
             indexVM.Employees = await _repo.Employee.GetAllEmployees(indexVM.Manager.ManagerId);
-            foreach(Employee employee in indexVM.Employees)
-            {
-                employee.AssignedJobs = await _repo.EmployeeJob.FindAssignedTasks(employee.EmployeeId);
-            }
+            indexVM.Projects = await _repo.Project.GetAllProjects(manager.ManagerId);
+            await SetEmployeesAssignedTasks(indexVM);
+            await GetJobsForEachProject(indexVM);
+
             return View(indexVM);
         }
 
@@ -226,6 +226,7 @@ namespace WorkplaceManager.Controllers
             var result = await _userManager.CreateAsync(user, password);
             if (result.Succeeded)
             {
+                employee.IdentityUserId = user.Id;
                 if(await _roleManager.RoleExistsAsync("Employee"))
                 {
                     await _userManager.AddToRoleAsync(user, "Employee");
@@ -244,11 +245,28 @@ namespace WorkplaceManager.Controllers
             }
             return randomInts;
         }
+
         public async Task<Manager> GetCurrentUser()
         {
             var userId = this.User.FindFirstValue(ClaimTypes.NameIdentifier);
             var manager = await _repo.Manager.GetManagerByUserId(userId);
             return manager;
+        }
+
+        public async Task SetEmployeesAssignedTasks(ManagerIndexVM indexVM)
+        {
+            foreach (Employee employee in indexVM.Employees)
+            {
+                employee.AssignedJobs = await _repo.EmployeeJob.FindAssignedTasks(employee.EmployeeId);
+            }
+        }
+
+        public async Task GetJobsForEachProject(ManagerIndexVM indexVM)
+        {
+            foreach(Project project in indexVM.Projects)
+            {
+               project.Jobs = await _repo.Job.GetAllJobs(project.ProjectId);
+            }
         }
     }
 }

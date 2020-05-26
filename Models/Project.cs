@@ -15,6 +15,9 @@ namespace WorkplaceManager.Models
         public DateTime? Deadline { get; set; }
         public bool IsComplete { get; set; }
 
+        [NotMapped]
+        public List<Job> Jobs { get; set; }
+
         [ForeignKey("Manager")]
         public int ManagerId { get; set; }
         public Manager Manager { get; set; }

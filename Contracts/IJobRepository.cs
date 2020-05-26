@@ -11,7 +11,7 @@ namespace WorkplaceManager.Contracts
         void CreateJob(Job job);
         void UpdateJob(Job job);
         void DeleteJob(Job job);
-        Task<Job> GetJobById(int jobId);
-        Task<List<Job>> GetAllJobs(int projectId);
+        Task<Job> GetJobById(int? jobId);
+        Task<List<Job>> GetAllJobs(int? projectId);
     }
 }
