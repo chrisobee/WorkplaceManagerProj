@@ -1,4 +1,4 @@
-﻿@model IEnumerable<WorkplaceManager.Models.SeniorManager>
+﻿@model WorkplaceManager.Models.SeniorManager
 
 @{
     ViewData["Title"] = "Index";
@@ -22,21 +22,7 @@
             <th></th>
         </tr>
     </thead>
-    <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.Name)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.IdentityUser.Id)
-            </td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.SeniorManagerId">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.SeniorManagerId">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.SeniorManagerId">Delete</a>
-            </td>
-        </tr>
-}
-    </tbody>
+    <tr>
+        <td><a class="btn btn-primary" asp-action="CreateManager"></a></td>
+    </tr>
 </table>

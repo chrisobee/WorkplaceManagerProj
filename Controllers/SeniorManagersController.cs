@@ -29,7 +29,8 @@ namespace WorkplaceManager.Controllers
         // GET: SeniorManagers
         public async Task<IActionResult> Index()
         {
-            return View();
+            var seniorManager = await GetCurrentSeniorManager();
+            return View(seniorManager);
         }
 
         // GET: SeniorManagers/Details/5
@@ -175,7 +176,7 @@ namespace WorkplaceManager.Controllers
             _repo.Manager.CreateManager(manager);
             string randomInts = GetRandomIntsForPassword();
             await AddManagerIdentity(manager, randomInts);
-            await _repo.Save();
+            _repo.Save();
 
             return RedirectToAction("DetailsForManager", new { managerId = manager.ManagerId, randomInts });
         }
@@ -184,7 +185,7 @@ namespace WorkplaceManager.Controllers
         public async Task<IActionResult> DetailsForManager(int? managerId, string randomInts)
         {
             Manager manager = await _repo.Manager.GetManagerById(managerId);
-            string password = $"{manager.FirstName[0]}{manager.LastName[0]}{randomInts}";
+            string password = $"{manager.FirstName[0]}{manager.LastName[0].ToString().ToLower()}-{randomInts}";
             ViewBag.password = password;
             return View(manager);
         }
@@ -202,12 +203,19 @@ namespace WorkplaceManager.Controllers
             string email = $"{manager.FirstName}{manager.LastName}@gmail.com";
 
             //Generate Random password
-            string password = $"{manager.FirstName[0]}{manager.LastName[0]}{randomInts}";
+            string password = $"{manager.FirstName[0]}{manager.LastName[0].ToString().ToLower()}-{randomInts}";
 
             //Add Manager info to user table
             var user = new IdentityUser { UserName = email, Email = email };
-            await _userManager.CreateAsync(user, password);
-            await _userManager.AddToRoleAsync(user, "Manager");
+            var result = await _userManager.CreateAsync(user, password);
+            if (result.Succeeded)
+            {
+                manager.IdentityUserId = user.Id;
+                if(await _roleManager.RoleExistsAsync("Manager"))
+                {
+                    await _userManager.AddToRoleAsync(user, "Manager");
+                }
+            }
         }
 
         public string GetRandomIntsForPassword()
