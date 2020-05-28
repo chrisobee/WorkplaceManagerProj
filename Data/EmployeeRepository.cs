@@ -32,7 +32,7 @@ namespace WorkplaceManager.Data
             return employee;
         }
 
-        public async Task<List<Employee>> GetAllEmployees(int managerId)
+        public async Task<List<Employee>> GetAllEmployees(int? managerId)
         {
             var results = await FindByCondition(e => e.ManagerId == managerId);
             List<Employee> employees = results.Include(e => e.IdentityUser).ToList();

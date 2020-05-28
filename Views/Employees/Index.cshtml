@@ -1,41 +1,84 @@
-﻿@model WorkplaceManager.Models.Employee
+﻿@model WorkplaceManager.ViewModels.EmployeeIndexVM
 
 @{
     ViewData["Title"] = "Index";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
+<style>
+    .projectSection{
+        border-width:2px; 
+        border-style:solid; 
+        border-color: #EB6864; 
+        border-radius: 25px; 
+        padding:12px 10px 5px 12px;
+    }
+</style>
 
 <h1>Index</h1>
 
-<table class="table">
-    <thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.FirstName)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.QualityOfWork)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.IdentityUser)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Manager)
-            </th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => modelItem.FirstName)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => modelItem.IdentityUser.Id)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => modelItem.Manager.FirstName)
-            </td>
-        </tr>
-    </tbody>
-</table>
+<div class="row">
+    <div class="col-md-3">
+        @if (Model.Coworkers.Count == 0)
+        {
+            <h5>No Coworkers Added Yet!</h5>
+        }
+        else
+        {
+            @foreach (Employee coworker in Model.Coworkers)
+            {
+                <div class="row">
+                    <h6>@coworker.FirstName</h6>
+                    <button type="button" class="btn btn-secondary" data-toggle="popover" data-placement="right" data-content="@coworker.AssignedJobs.Select(j => j.Name)" data-original-title="Assigned Jobs">Assigned Jobs</button>
+                </div>
+            }
+        }
+    </div>
+    <div class="col-md-9">
+        @foreach (Project project in Model.Projects)
+        {
+            <div class="row projectSection">
+                <div class="col-md-3">
+                    <div class="row">
+                        <h4>@project.Name</h4>
+                    </div>
+                    <div class="row">
+                        <h5>@project.Deadline.Value.ToString("d")</h5>
+                    </div>
+                    <div class="progress">
+                        <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" aria-valuenow="'@project.PercentComplete'" aria-valuemin="0" aria-valuemax="100" style="width: @project.PercentComplete%"></div>
+                    </div>
+                </div>
+                <div class="col-md-3"></div>
+                <div class="col-md-6">
+                    <div class="card text-white bg-primary mb-3" style="max-width: 20rem;">
+                        <div class="card-header">Jobs</div>
+                        <div class="card-body">
+                            @foreach (Job job in project.Jobs)
+                            {
+                                <div class="row">
+                                    <div class="col-md-2">
+                                        <input type="checkbox" onclick="SaveCheckChange(@job.JobId)" asp-for="@job.IsComplete" />
+                                    </div>
+                                    <div class="col-md-5">
+                                        <a asp-action="Details" asp-controller="Jobs" asp-route-id="@job.JobId">@job.Name</a>
+                                    </div>
+                                    <div class="col-md-5">
+                                        <p>@job.Deadline.Value.ToString("d")</p>
+                                    </div>
+                                </div>
+                            }
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <br />
+        }
+    </div>
+</div>
+
+<script>
+    function SaveCheckChange(jobId) {
+        console.log(jobId);
+        window.location.href = '@Url.Action("UpdateJob", "Jobs")' + '/' + jobId;
+    }
+</script>

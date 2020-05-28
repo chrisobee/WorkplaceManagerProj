@@ -9,6 +9,7 @@ using Microsoft.EntityFrameworkCore;
 using WorkplaceManager.Contracts;
 using WorkplaceManager.Data;
 using WorkplaceManager.Models;
+using WorkplaceManager.ViewModels;
 
 namespace WorkplaceManager.Controllers
 {
@@ -24,13 +25,16 @@ namespace WorkplaceManager.Controllers
         // GET: Employees
         public async Task<IActionResult> Index()
         {
-            var userId = this.User.FindFirstValue(ClaimTypes.NameIdentifier);
-            var employee = await _repo.Employee.GetEmployeeWithUserId(userId);
-            if(employee == null)
-            {
-                return RedirectToAction("Create");
-            }
-            return View(employee);
+            EmployeeIndexVM indexVM = new EmployeeIndexVM();
+
+            indexVM.Employee = await GetCurrentUser();
+            indexVM.Coworkers = await _repo.Employee.GetAllEmployees(indexVM.Employee.ManagerId);
+            indexVM.Projects = await _repo.Project.GetAllProjects(indexVM.Employee.ManagerId);
+            await GetJobsForProjects(indexVM);
+            await GetCoworkersAssignedJobs(indexVM);
+            GetPercentageOfTasksDone(indexVM);
+
+            return View(indexVM);
         }
 
         // GET: Employees/Details/5
@@ -170,6 +174,46 @@ namespace WorkplaceManager.Controllers
             var userId = this.User.FindFirstValue(ClaimTypes.NameIdentifier);
             var employee = await _repo.Employee.GetEmployeeWithUserId(userId);
             return employee;
+        }
+
+        public async Task GetJobsForProjects(EmployeeIndexVM indexVM)
+        {
+            foreach(Project project in indexVM.Projects)
+            {
+                project.Jobs = await _repo.Job.GetAllJobs(project.ProjectId);
+            }
+        }
+
+        public async Task GetCoworkersAssignedJobs(EmployeeIndexVM indexVM)
+        {
+            foreach(Employee employee in indexVM.Coworkers)
+            {
+                employee.AssignedJobs = await _repo.EmployeeJob.FindAssignedTasks(employee.EmployeeId);
+            }
+        }
+
+        public void GetPercentageOfTasksDone(EmployeeIndexVM indexVM)
+        {
+            foreach (Project project in indexVM.Projects)
+            {
+                double jobsComplete = 0;
+                double totalJobs = project.Jobs.Count();
+
+                if (totalJobs == 0)
+                {
+                    continue;
+                }
+
+                foreach (Job job in project.Jobs)
+                {
+                    if (job.IsComplete)
+                    {
+                        jobsComplete++;
+                    }
+                }
+                double result = (jobsComplete / totalJobs) * 100;
+                project.PercentComplete = (int)Math.Round(result);
+            }
         }
     }
 }

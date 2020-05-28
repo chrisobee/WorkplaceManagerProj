@@ -6,10 +6,10 @@ using WorkplaceManager.Models;
 
 namespace WorkplaceManager.ViewModels
 {
-    public class ManagerIndexVM
+    public class EmployeeIndexVM
     {
-        public Manager Manager { get; set; }
-        public List<Employee> Employees { get; set; }
+        public Employee Employee { get; set; }
+        public List<Employee> Coworkers { get; set; }
         public List<Project> Projects { get; set; }
     }
 }
