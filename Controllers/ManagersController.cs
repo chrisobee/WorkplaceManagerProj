@@ -45,6 +45,7 @@ namespace WorkplaceManager.Controllers
             indexVM.Projects = await _repo.Project.GetAllProjects(manager.ManagerId);
             await SetEmployeesAssignedTasks(indexVM);
             await GetJobsForEachProject(indexVM);
+            GetPercentageOfTasksDone(indexVM);
 
             return View(indexVM);
         }
@@ -245,6 +246,30 @@ namespace WorkplaceManager.Controllers
             foreach(Project project in indexVM.Projects)
             {
                project.Jobs = await _repo.Job.GetAllJobs(project.ProjectId);
+            }
+        }
+
+        public void GetPercentageOfTasksDone(ManagerIndexVM indexVM)
+        {
+            foreach(Project project in indexVM.Projects)
+            {
+                double jobsComplete = 0;
+                double totalJobs = project.Jobs.Count();
+
+                if(totalJobs == 0)
+                {
+                    continue;
+                }
+
+                foreach (Job job in project.Jobs)
+                {
+                    if (job.IsComplete)
+                    {
+                        jobsComplete++;
+                    }
+                }
+                double result = (jobsComplete / totalJobs) * 100;
+                project.PercentComplete = (int)Math.Round(result);
             }
         }
     }
