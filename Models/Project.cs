@@ -18,6 +18,9 @@ namespace WorkplaceManager.Models
         [NotMapped]
         public List<Job> Jobs { get; set; }
 
+        [NotMapped]
+        public int PercentComplete { get; set; }
+
         [ForeignKey("Manager")]
         public int ManagerId { get; set; }
         public Manager Manager { get; set; }

@@ -21,6 +21,16 @@ namespace WorkplaceManager.Controllers
             _repo = repo;
         }
 
+        //GET: Jobs/UpdateJob/4
+        public async Task<IActionResult> UpdateJob(int? id)
+        {
+            var job = await _repo.Job.GetJobById(id);
+            job.IsComplete = !job.IsComplete;
+            await _repo.Save();
+
+            return RedirectToAction("Index", "Home");
+        }
+
         // GET: Jobs/Details/5
         public async Task<IActionResult> Details(int? id)
         {

@@ -67,28 +67,6 @@ namespace WorkplaceManager.Controllers
             return View(manager);
         }
 
-        // GET: Managers/Create
-        public IActionResult Create()
-        {
-            return View();
-        }
-
-        // POST: Managers/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to, for 
-        // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(Manager manager)
-        {
-            if (ModelState.IsValid)
-            {
-                _repo.Manager.CreateManager(manager);
-                await _repo.Save();
-                return RedirectToAction(nameof(Index));
-            }
-            return View(manager);
-        }
-
         // GET: Managers/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {

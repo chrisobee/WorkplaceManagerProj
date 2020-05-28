@@ -18,12 +18,12 @@ namespace WorkplaceManager
         }
         public async Task<IQueryable<T>> FindAll()
         {
-            return ApplicationDbContext.Set<T>().AsNoTracking();
+            return ApplicationDbContext.Set<T>();
         }
 
         public async Task<IQueryable<T>> FindByCondition(Expression<Func<T, bool>> expression)
         {
-            return ApplicationDbContext.Set<T>().Where(expression).AsNoTracking();
+            return ApplicationDbContext.Set<T>().Where(expression);
         }
 
         public void Create(T entity)
