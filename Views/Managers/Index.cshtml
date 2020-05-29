@@ -20,18 +20,19 @@
         border-radius: 15px;
         padding: 10px 25px 10px 15px;
     }
-    .modal-content{
-        background-color:#EB6864;
+    .modal{
+        background-color: rgba(0, 0, 0, .5);
+    }
+    .modal-content {
+        background-color: #EB6864;
+        border:none;
     }
 </style>
 
-<h1>Index</h1>
-
-
-
 <div class="row">
     <div class="col-md-2">
-
+        <h1>Employees</h1>
+        <a style="margin-bottom: 10px;" class="btn btn-info" asp-action="CreateEmployee">Add New Employee</a>
         @if (Model.Employees.Count == 0)
         {
             <h5>No Employees Added Yet!</h5>
@@ -46,18 +47,25 @@
                     </div>
                     <br />
                     <div>
-                        <button type="button" class="btn btn-secondary" title="Assigned Jobs" data-toggle="popover" data-placement="right" data-content="@string.Join(",", employee.AssignedJobs.Select(j => j.Name))" data-original-title="Assigned Jobs">Assigned Jobs</button>
+                        @if (employee.AssignedJobs.Count == 0)
+                        {
+                            <button type="button" class="btn btn-secondary" title="Assigned Jobs" data-toggle="popover" data-placement="right" data-content="No Assigned Jobs!" data-original-title="Assigned Jobs">Assigned Jobs</button>
+                        }
+                        else
+                        {
+                            <button type="button" class="btn btn-secondary" title="Assigned Jobs" data-toggle="popover" data-placement="right" data-content="@string.Join(",", employee.AssignedJobs.Select(j => j.Name))" data-original-title="Assigned Jobs">Assigned Jobs</button>
+                        }
                     </div>
                 </div>
                 <br />
             }
         }
-        <a type="btn btn-primary" asp-action="CreateEmployee">Add New Employee</a>
     </div>
     <div class="col-md-1"></div>
     <div class="col-md-9">
-        <a asp-action="Create" asp-controller="Projects">Add New Project</a>
-        @foreach(Project project in Model.Projects)
+        <h1>Projects</h1>
+        <a style="margin-bottom:10px;" class="btn btn-info" asp-action="Create" asp-controller="Projects">Add New Project</a>
+        @foreach (Project project in Model.Projects)
         {
             <div class="row projectSection">
                 <div class="col-md-3">
@@ -74,7 +82,7 @@
                 <div class="col-md-3"></div>
 
                 <div class="col-md-6">
-                    <div class="card text-white bg-primary mb-3" style="max-width: 20rem;">
+                    <div class="card text-white bg-primary mb-3" style="max-width: 20rem; ">
                         <div class="card-header">Jobs</div>
                         <div class="card-body">
                             @foreach (Job job in project.Jobs)
@@ -117,8 +125,18 @@
                                 </div>
                                 <div class="row">
                                     <div class="col-md-6">
-                                        <label>Completed:</label>
-                                        <input type="checkbox" onclick="SaveCheckChange(@job.JobId)" asp-for="@job.IsComplete" />
+                                        <div class="custom-control custom-checkbox">
+                                            @if (job.IsComplete == true)
+                                            {
+                                                <input type="checkbox" class="custom-control-input" id="taskComplete" checked="checked" disabled="">
+                                                <label style="color:white;" class="custom-control-label" for="taskComplete">Complete</label>
+                                            }
+                                            else
+                                            {
+                                                <input type="checkbox" class="custom-control-input" id="taskComplete" disabled="">
+                                                <label style="color:white;" class="custom-control-label" for="taskComplete">Job Incomplete</label>
+                                            }
+                                        </div>
                                     </div>
                                     <div class="col-md-6">
                                         <button class="btn btn-secondary" onclick="openModal(@job.JobId)" type="button">Assign Employee</button>
@@ -126,13 +144,15 @@
                                 </div>
                                 <hr />
                             }
-                            <a style="position: absolute; bottom:0; right:0;" asp-action="Create" asp-controller="Jobs" asp-route-projectId="@project.ProjectId">Add Job</a>
+                            <a style="position: absolute; bottom:0; right:0;" class="btn btn-info" asp-action="Create" asp-controller="Jobs" asp-route-projectId="@project.ProjectId">Add Job</a>
                         </div>
                     </div>
                 </div>
             </div>
             <br />
         }
+        <div class="row">
+        </div>
     </div>
 </div>
 
@@ -173,31 +193,6 @@
             if (event.target == modal) {
                 modal.style.display = "none";
             }
-        }
-    }
-
-    var modal = document.getElementsByClassName("myModal");
-
-    // Get the button that opens the modal
-    var btn = document.getElementsByClassName("assignJob");
-
-    // Get the <span> element that closes the modal
-    var span = document.getElementsByClassName("close")[0];
-
-    // When the user clicks on the button, open the modal
-    btn.onclick = function() {
-        modal.style.display = "block";
-    }
-
-    // When the user clicks on <span> (x), close the modal
-    span.onclick = function() {
-         modal.style.display = "none";
-    }
-
-    // When the user clicks anywhere outside of the modal, close it
-    window.onclick = function(event) {
-        if (event.target == modal) {
-         modal.style.display = "none";
         }
     }
 </script>
