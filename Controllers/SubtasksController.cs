@@ -55,7 +55,8 @@ namespace WorkplaceManager.Controllers
             Subtask subtask = new Subtask()
             {
                 JobId = jobId,
-                Name = subtaskName
+                Name = subtaskName,
+                IsComplete = false
             };
             _repo.Subtask.CreateSubtask(subtask);
             await _repo.Save();

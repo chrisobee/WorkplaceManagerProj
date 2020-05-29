@@ -4,11 +4,20 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h1>Details</h1>
+<style>
+    .modal{
+        background-color: rgba(0, 0, 0, .5);
+    }
+    .modal-content {
+        background-color: #EB6864;
+        border:none;
+    }
+</style>
+
+<h1>@Model.Job.Name</h1>
 
 <div class="row">
     <div class="col-md-6">
-        <h4>Job</h4>
         <hr />
         <dl class="row">
             <dt class="col-sm-2">
@@ -26,7 +35,7 @@
         </dl>
     </div>
     <div class="col-md-6">
-        <div class="card text-white bg-secondary mb-3" style="max-width: 20rem;">
+        <div class="card text-white bg-primary mb-3" style="max-width: 20rem;">
             <div class="card-header">Subtasks</div>
             <div class="card-body">
                 @if (Model.Subtasks.Count == 0)
@@ -38,11 +47,22 @@
                     @foreach (Subtask subtask in Model.Subtasks)
                     {
                         <div class="row">
-                            <div class="col-md-9">
-                                <p>@subtask.Name</p>
+                            <div class="col-md-6">
+                                <div class="custom-control custom-checkbox">
+                                    @if (subtask.IsComplete == true)
+                                    {
+                                        <input style="color:white;" type="checkbox" class="custom-control-input" id="taskComplete" checked="checked" disabled="">
+                                        <label style="color:white;" class="custom-control-label" for="taskComplete">Complete</label>
+                                    }
+                                    else
+                                    {
+                                        <input type="checkbox" class="custom-control-input" id="taskComplete" disabled="">
+                                        <label style="color:white;" class="custom-control-label" for="taskComplete">Job Incomplete</label>
+                                    }
+                                </div>
                             </div>
-                            <div class="col-md-3">
-                                <a asp-action="Details" asp-controller="Subtasks" asp-route-id="@subtask.SubtaskId">@subtask.Name</a>
+                            <div class="col-md-6">
+                                <p>@subtask.Name</p>
                             </div>
                         </div>
                         <hr />
@@ -80,9 +100,11 @@
     </div>
 </div>
 <div class="row">
-    <a class="btn btn-info"  asp-controller="Home" asp-action="Index">Back to List</a>
-    <a class="btn btn-info" asp-action="Edit" asp-route-id="@Model.Job.JobId">Edit</a>
-    <a class="btn btn-danger" asp-action="Delete" asp-route-id="@Model.Job.JobId">Delete</a>
+    <div class="btn-group" role="group">
+        <a class="btn btn-info" asp-controller="Home" asp-action="Index">Back to List </a>
+        <a class="btn btn-info" asp-action="Edit" asp-route-id="@Model.Job.JobId"> Edit </a>
+        <a class="btn btn-info" asp-action="Delete" asp-route-id="@Model.Job.JobId"> Delete </a>
+    </div>
 </div>
 
 <script>
