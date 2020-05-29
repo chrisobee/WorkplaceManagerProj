@@ -5,10 +5,33 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
+<style>
+    .projectSection{
+        border-width:2px; 
+        border-style:solid; 
+        border-color: #EB6864; 
+        border-radius: 25px; 
+        padding: 12px 5px 5px 20px;
+    }
+    .employeeSection{
+        border-width:2px;
+        border-style:solid;
+        border-color: #EB6864;
+        border-radius: 15px;
+        padding: 10px 25px 10px 15px;
+    }
+    .modal-content{
+        background-color:#EB6864;
+    }
+</style>
+
 <h1>Index</h1>
 
+
+
 <div class="row">
-    <div class="col-md-3">
+    <div class="col-md-2">
+
         @if (Model.Employees.Count == 0)
         {
             <h5>No Employees Added Yet!</h5>
@@ -17,19 +40,26 @@
         {
             @foreach (Employee employee in Model.Employees)
             {
-                <div class="row">
-                    <h6>@employee.FirstName</h6>
-                    <button type="button" class="btn btn-secondary" data-toggle="popover" data-placement="right" data-content="@employee.AssignedJobs.Select(j => j.Name)" data-original-title="Assigned Jobs">Assigned Jobs</button>
+                <div class="row employeeSection">
+                    <div>
+                        <h6>@employee.FirstName</h6>
+                    </div>
+                    <br />
+                    <div>
+                        <button type="button" class="btn btn-secondary" title="Assigned Jobs" data-toggle="popover" data-placement="right" data-content="@string.Join(",", employee.AssignedJobs.Select(j => j.Name))" data-original-title="Assigned Jobs">Assigned Jobs</button>
+                    </div>
                 </div>
+                <br />
             }
         }
         <a type="btn btn-primary" asp-action="CreateEmployee">Add New Employee</a>
     </div>
-    <div class="col-md-9" style="background-color:rosybrown">
+    <div class="col-md-1"></div>
+    <div class="col-md-9">
         <a asp-action="Create" asp-controller="Projects">Add New Project</a>
         @foreach(Project project in Model.Projects)
         {
-            <div class="row">
+            <div class="row projectSection">
                 <div class="col-md-3">
                     <div class="row">
                         <h4>@project.Name</h4>
@@ -43,28 +73,65 @@
                 </div>
                 <div class="col-md-3"></div>
                 <div class="col-md-6">
+                    
                     <div class="card text-white bg-primary mb-3" style="max-width: 20rem;">
                         <div class="card-header">Jobs</div>
                         <div class="card-body">
-                            @foreach(Job job in project.Jobs)
+                            @foreach (Job job in project.Jobs)
                             {
+                                //MODAL POPUP MENU TO ASSIGN JOBS
+                                <div id="myModal" class="modal">
+                                    <div class="modal-dialog" role="document">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <h5 class="modal-title">Assigning Tasks</h5>
+                                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                    <span aria-hidden="true">&times;</span>
+                                                </button>
+                                            </div>
+                                            <div class="modal-body">
+                                                <div class="btn-group" role="group" aria-label="Employees">
+                                                    <button type="button" class="btn btn-secondary">Choose Employee</button>
+                                                    <div class="btn-group" role="group">
+                                                        <button id="btnGroupDrop1" type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"></button>
+                                                        <div class="dropdown-menu" aria-labelledby="btnGroupDrop1">
+                                                            @foreach (Employee employee in Model.Employees)
+                                                            {
+                                                                <a class="dropdown-item" asp-action="AssignEmployeeJob" asp-route-employeeId="@employee.EmployeeId" asp-route-jobId="@job.JobId">@employee.FirstName</a>
+                                                            }
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                    </div>
+                                </div>
+                            </div>
+
                                 <div class="row">
-                                    <div class="col-md-2">
-                                        <input type="checkbox" onclick="SaveCheckChange(@job.JobId)" asp-for="@job.IsComplete" />
+                                    <div class="col-md-6">
+                                        <a style="color:white;" asp-action="Details" asp-controller="Jobs" asp-route-id="@job.JobId">@job.Name</a>
                                     </div>
-                                    <div class="col-md-5">
-                                        <a asp-action="Details" asp-controller="Jobs" asp-route-id="@job.JobId">@job.Name</a>
-                                    </div>
-                                    <div class="col-md-5">
+                                    <div class="col-md-6">
                                         <p>@job.Deadline.Value.ToString("d")</p>
                                     </div>
                                 </div>
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <label>Completed:</label>
+                                        <input type="checkbox" onclick="SaveCheckChange(@job.JobId)" asp-for="@job.IsComplete" />
+                                    </div>
+                                    <div class="col-md-6">
+                                        <button class="btn btn-secondary" type="button" id="assignJob">Assign Employee</button>
+                                    </div>
+                                </div>
+                                <hr />
                             }
                             <a style="position: absolute; bottom:0; right:0;" asp-action="Create" asp-controller="Jobs" asp-route-projectId="@project.ProjectId">Add Job</a>
                         </div>
                     </div>
                 </div>
             </div>
+            <br />
         }
     </div>
 </div>
@@ -73,5 +140,47 @@
     function SaveCheckChange(jobId) {
         console.log(jobId);
         window.location.href = '@Url.Action("UpdateJob", "Jobs")' + '/' + jobId;
+    }
+
+    function PlaceJobsInString(jobNames) {
+        var names = "";
+        for (var i = 0; i < jobNames.Length; i++) {
+            if (names == "") {
+                names = jobNames[i];
+            }
+            else {
+                names = `${names} \n ${jobNames[i]}`;
+            }
+        }
+        return names;
+    }
+
+    $(document).ready(function(){
+        $('[data-toggle="popover"]').popover();
+    });
+
+    var modal = document.getElementById("myModal");
+
+    // Get the button that opens the modal
+    var btn = document.getElementById("assignJob");
+
+    // Get the <span> element that closes the modal
+    var span = document.getElementsByClassName("close")[0];
+
+    // When the user clicks on the button, open the modal
+    btn.onclick = function() {
+        modal.style.display = "block";
+    }
+
+    // When the user clicks on <span> (x), close the modal
+    span.onclick = function() {
+         modal.style.display = "none";
+    }
+
+    // When the user clicks anywhere outside of the modal, close it
+    window.onclick = function(event) {
+        if (event.target == modal) {
+         modal.style.display = "none";
+        }
     }
 </script>

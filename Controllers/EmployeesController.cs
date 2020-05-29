@@ -54,6 +54,22 @@ namespace WorkplaceManager.Controllers
             return View(employee);
         }
 
+        public async Task<IActionResult> EmployeeJobDetails(int? id)
+        {
+            if(id == null)
+            {
+                return NotFound();
+            }
+
+            var job = await _repo.Job.GetJobById(id);
+            if(job == null)
+            {
+                return NotFound();
+            }
+
+            return View(job);
+        }
+
         // GET: Employees/Create
         public IActionResult Create()
         {

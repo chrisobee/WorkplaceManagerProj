@@ -26,7 +26,7 @@ namespace WorkplaceManager.Data
         public async Task<List<Job>> FindAssignedTasks(int employeeId)
         {
             var results = await FindByCondition(e => e.EmployeeId == employeeId);
-            var jobs = results.Where(e => e.Job.IsComplete == false).Select(e => e.Job).ToList();
+            var jobs = results.Select(e => e.Job).ToList();
             return jobs;
         }
     }

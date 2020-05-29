@@ -10,7 +10,7 @@
         border-style:solid; 
         border-color: #EB6864; 
         border-radius: 25px; 
-        padding:12px 10px 5px 12px;
+        padding: 12px 5px 5px 20px;
     }
 </style>
 
@@ -60,7 +60,7 @@
                                         <input type="checkbox" onclick="SaveCheckChange(@job.JobId)" asp-for="@job.IsComplete" />
                                     </div>
                                     <div class="col-md-5">
-                                        <a asp-action="Details" asp-controller="Jobs" asp-route-id="@job.JobId">@job.Name</a>
+                                        <a style="color:white;" asp-action="EmployeeJobDetails" asp-controller="Employees" asp-route-id="@job.JobId">@job.Name</a>
                                     </div>
                                     <div class="col-md-5">
                                         <p>@job.Deadline.Value.ToString("d")</p>

@@ -50,6 +50,13 @@ namespace WorkplaceManager.Controllers
             return View(indexVM);
         }
 
+        public async Task<IActionResult> AssignEmployeeJob(int employeeId, int jobId)
+        {
+            _repo.EmployeeJob.CreateEmployeeJob(employeeId, jobId);
+            await _repo.Save();
+            return RedirectToAction("Index", "Home");
+        }
+
         // GET: Managers/Details/5
         public async Task<IActionResult> Details(int? id)
         {
@@ -245,7 +252,17 @@ namespace WorkplaceManager.Controllers
         {
             foreach(Project project in indexVM.Projects)
             {
-               project.Jobs = await _repo.Job.GetAllJobs(project.ProjectId);
+                project.Jobs = await _repo.Job.GetAllJobs(project.ProjectId);
+
+                //All jobs so that the jobs can have an employee assigned to it in the index view
+                if(indexVM.Jobs == null)
+                {
+                    indexVM.Jobs = project.Jobs;
+                }
+                else
+                {
+                    indexVM.Jobs = indexVM.Jobs.Concat(project.Jobs).ToList();
+                }
             }
         }
 
