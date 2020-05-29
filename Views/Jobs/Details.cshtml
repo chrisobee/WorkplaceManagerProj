@@ -1,32 +1,108 @@
-﻿@model WorkplaceManager.Models.Job
+﻿@model WorkplaceManager.ViewModels.JobDetailsVM
 
 @{
-    ViewData["Title"] = "Details";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
 <h1>Details</h1>
 
-<div>
-    <h4>Job</h4>
-    <hr />
-    <dl class="row">
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Name)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Name)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Deadline)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Deadline)
-        </dd>
-    </dl>
+<div class="row">
+    <div class="col-md-6">
+        <h4>Job</h4>
+        <hr />
+        <dl class="row">
+            <dt class="col-sm-2">
+                @Html.DisplayNameFor(model => model.Job.Name)
+            </dt>
+            <dd class="col-sm-10">
+                @Html.DisplayFor(model => model.Job.Name)
+            </dd>
+            <dt class="col-sm-2">
+                @Html.DisplayNameFor(model => model.Job.Deadline)
+            </dt>
+            <dd class="col-sm-10">
+                @Model.Job.Deadline.Value.ToShortDateString()
+            </dd>
+        </dl>
+    </div>
+    <div class="col-md-6">
+        <div class="card text-white bg-secondary mb-3" style="max-width: 20rem;">
+            <div class="card-header">Subtasks</div>
+            <div class="card-body">
+                @if (Model.Subtasks.Count == 0)
+                {
+                    <p>No Subtasks Added!</p>
+                }
+                else
+                {
+                    @foreach (Subtask subtask in Model.Subtasks)
+                    {
+                        <div class="row">
+                            <div class="col-md-9">
+                                <p>@subtask.Name</p>
+                            </div>
+                            <div class="col-md-3">
+                                <a asp-action="Details" asp-controller="Subtasks" asp-route-id="@subtask.SubtaskId">@subtask.Name</a>
+                            </div>
+                        </div>
+                        <hr />
+                    }
+                }
+            </div>
+        </div>
+
+        <!--Create modal for adding new subtasks-->
+        <div id="createModal" class="modal">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Create new Subtask</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <form asp-action="Create" asp-controller="Subtasks" asp-route-jobId="@Model.Job.JobId" method="post">
+                            <div class="form-group">
+                                <label for="subtaskName" class="control-label">Subtask Name</label>
+                                <input type="text" name="subtaskName" class="form-control" />
+                            </div>
+                            <div class="form-group">
+                                <button type="submit" class="btn btn-info">Create</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!--Button to open modal-->
+        <button id="createBtn" class="btn btn-info" type="button">Add New Subtask</button>
+    </div>
 </div>
-<div>
-    <a asp-action="Edit" asp-route-id="@Model.JobId">Edit</a> |
-    <a asp-action="Delete" asp-route-id="@Model.JobId">Delete</a> |
-    <a asp-controller="Home" asp-action="Index">Back to List</a>
+<div class="row">
+    <a class="btn btn-info"  asp-controller="Home" asp-action="Index">Back to List</a>
+    <a class="btn btn-info" asp-action="Edit" asp-route-id="@Model.Job.JobId">Edit</a>
+    <a class="btn btn-danger" asp-action="Delete" asp-route-id="@Model.Job.JobId">Delete</a>
 </div>
+
+<script>
+    var btn = document.getElementById("createBtn");
+
+    var modal = document.getElementById("createModal");
+
+    var span = document.getElementsByClassName("close")[0];
+
+    btn.onclick = function () {
+        modal.style.display = "block";
+    }
+
+    span.onclick = function () {
+        modal.style.display = "none";
+    }
+
+    window.onclick = function (event) {
+        if (event.target == modal) {
+            modal.style.display = "none";
+        }
+    }
+</script>

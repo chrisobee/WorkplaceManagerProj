@@ -25,7 +25,7 @@ namespace WorkplaceManager.Data
             return subtasks;
         }
 
-        public async Task<Subtask> GetSubtaskById(int subtaskId)
+        public async Task<Subtask> GetSubtaskById(int? subtaskId)
         {
             var result = await FindByCondition(s => s.SubtaskId == subtaskId);
             var subtask = result.Include(s => s.Job).SingleOrDefault();

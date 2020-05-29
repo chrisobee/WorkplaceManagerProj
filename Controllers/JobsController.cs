@@ -9,6 +9,7 @@ using Microsoft.EntityFrameworkCore;
 using WorkplaceManager.Contracts;
 using WorkplaceManager.Data;
 using WorkplaceManager.Models;
+using WorkplaceManager.ViewModels;
 
 namespace WorkplaceManager.Controllers
 {
@@ -34,19 +35,22 @@ namespace WorkplaceManager.Controllers
         // GET: Jobs/Details/5
         public async Task<IActionResult> Details(int? id)
         {
+            JobDetailsVM detailsVM = new JobDetailsVM();
             if (id == null)
             {
                 return NotFound();
             }
 
-            var job = await _repo.Job.GetJobById(id);
+            detailsVM.Job = await _repo.Job.GetJobById(id);
 
-            if (job == null)
+            if (detailsVM.Job == null)
             {
                 return NotFound();
             }
 
-            return View(job);
+            detailsVM.Subtasks = await _repo.Subtask.GetAllSubtasks(detailsVM.Job.JobId);
+
+            return View(detailsVM);
         }
 
         // GET: Jobs/Create

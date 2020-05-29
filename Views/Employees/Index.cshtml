@@ -62,7 +62,7 @@
                         <h5>@project.Deadline.Value.ToString("d")</h5>
                     </div>
                     <div class="progress">
-                        <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" aria-valuenow="'@project.PercentComplete'" aria-valuemin="0" aria-valuemax="100" style="width: @project.PercentComplete%"></div>
+                        <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" aria-valuenow="'@project.PercentComplete'" aria-valuemin="0" aria-valuemax="100" style="width: @project.PercentComplete%">@project.PercentComplete%</div>
                     </div>
                 </div>
                 <div class="col-md-3"></div>
@@ -83,6 +83,7 @@
                                         <p>@job.Deadline.Value.ToString("d")</p>
                                     </div>
                                 </div>
+                                <hr />
                             }
                         </div>
                     </div>
