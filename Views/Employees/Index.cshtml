@@ -5,25 +5,28 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 <style>
-    .projectSection{
-        border-width:2px; 
-        border-style:solid; 
-        border-color: #EB6864; 
-        border-radius: 25px; 
+    .projectSection {
+        border-width: 2px;
+        border-style: solid;
+        border-color: #EB6864;
+        border-radius: 25px;
         padding: 12px 5px 5px 20px;
-        margin-top:10px;
+        margin-top: 10px;
     }
-    .coworkersSection{
-        border-width:2px;
-        border-style:solid;
+
+    .coworkersSection {
+        border-width: 2px;
+        border-style: solid;
         border-color: #EB6864;
         border-radius: 15px;
         padding: 10px 25px 10px 15px;
-        margin-top:10px;
+        margin-top: 10px;
     }
-    .modal{
+
+    .modal {
         background-color: rgba(0, 0, 0, .5);
     }
+
     .modal-content {
         background-color: #EB6864;
         border: none;
@@ -31,92 +34,109 @@
     }
 </style>
 
-<div class="row">
-    <div class="col-md-2">
-        <h1>Coworkers</h1>
-        @if (Model.Coworkers.Count == 0)
-        {
-            <h5>No Coworkers Added Yet!</h5>
-        }
-        else
-        {
-            @foreach (Employee coworker in Model.Coworkers)
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+
+<div class="container">
+    <div class="row">
+        <div class="col-md-2">
+            <h1>Coworkers</h1>
+            <div class="row coworkersSection">
+                <span class="fa fa-star checked" style="position:relative;right:-140px;"></span>
+                <h6>You</h6>
+                @if (Model.Employee.AssignedJobs.Count == 0)
+                {
+                    <button type="button" class="btn btn-secondary" title="Assigned Jobs" data-toggle="popover" data-placement="right" data-content="No Assigned Jobs!" data-original-title="Assigned Jobs">Assigned Jobs</button>
+                }
+                else
+                {
+                    <button type="button" class="btn btn-secondary" title="Assigned Jobs" data-toggle="popover" data-placement="right" data-content="@string.Join("\n", Model.Employee.AssignedJobs.Select(j => j.Name))" data-original-title="Assigned Jobs">Assigned Jobs</button>
+                }
+            </div>
+            @if (Model.Coworkers.Count == 0)
             {
-                <div class="row coworkersSection">
-                    <h6>@coworker.FirstName</h6>
-                    @if(coworker.AssignedJobs.Count == 0)
-                    {
-                        <button type="button" class="btn btn-secondary" title="Assigned Jobs" data-toggle="popover" data-placement="right" data-content="No Assigned Jobs!" data-original-title="Assigned Jobs">Assigned Jobs</button>
-                    }
-                    else
-                    {
-                        <button type="button" class="btn btn-secondary" title="Assigned Jobs" data-toggle="popover" data-placement="right" data-content="@string.Join("\n", coworker.AssignedJobs.Select(j => j.Name))" data-original-title="Assigned Jobs">Assigned Jobs</button>
-                    }
-                </div>
+                <h5>No Coworkers Added Yet!</h5>
             }
-        }
-    </div>
-    <div class="col-md-1"></div>
-    <div class="col-md-9">
-        <h1>Projects</h1>
-        @foreach (Project project in Model.Projects)
-        {
-            <div class="row projectSection">
-                <div class="col-md-3">
-                    <div class="row">
-                        <h4>@project.Name</h4>
+            else
+            {
+                @foreach (Employee coworker in Model.Coworkers)
+                {
+                    <div class="row coworkersSection">
+                        <h6>@coworker.FirstName</h6>
+                        @if (coworker.AssignedJobs.Count == 0)
+                        {
+                            <button type="button" class="btn btn-secondary" title="Assigned Jobs" data-toggle="popover" data-placement="right" data-content="No Assigned Jobs!" data-original-title="Assigned Jobs">Assigned Jobs</button>
+                        }
+                        else
+                        {
+                            <button type="button" class="btn btn-secondary" title="Assigned Jobs" data-toggle="popover" data-placement="right" data-content="@string.Join("\n", coworker.AssignedJobs.Select(j => j.Name))" data-original-title="Assigned Jobs">Assigned Jobs</button>
+                        }
                     </div>
-                    <div class="row">
-                        <h5>@project.Deadline.Value.ToString("d")</h5>
+                }
+            }
+        </div>
+        <div class="col-md-1"></div>
+        <div class="col-md-9">
+            <h1>Projects</h1>
+            @foreach (Project project in Model.Projects)
+            {
+                <div class="row projectSection">
+                    <div class="col-md-3">
+                        <div class="row">
+                            <h4>@project.Name</h4>
+                        </div>
+                        <div class="row">
+                            <h5>@project.Deadline.Value.ToString("d")</h5>
+                        </div>
+                        <div class="progress">
+                            <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" aria-valuenow="'@project.PercentComplete'" aria-valuemin="0" aria-valuemax="100" style="width: @project.PercentComplete%">@project.PercentComplete%</div>
+                        </div>
                     </div>
-                    <div class="progress">
-                        <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" aria-valuenow="'@project.PercentComplete'" aria-valuemin="0" aria-valuemax="100" style="width: @project.PercentComplete%">@project.PercentComplete%</div>
-                    </div>
-                </div>
-                <div class="col-md-3"></div>
-                <div class="col-md-6">
-                    <div class="card text-white bg-primary mb-3" style="max-width: 20rem;">
-                        <div class="card-header">Jobs</div>
-                        <div class="card-body">
-                            @foreach (Job job in project.Jobs)
-                            {
-                                <div id="confirmModal@(job.JobId)" class="modal">
-                                    <div class="modal-dialog" role="document">
-                                        <div class="modal-content">
-                                            <div class="modal-header">
-                                                <h5 class="modal-title">Confirm Subtask Checkoff</h5>
-                                                <button type="button" class="btn btn-secondary close@(job.JobId)" data-dismiss="modal" aria-label="Close">
-                                                    <span aria-hidden="true">&times;</span>
-                                                </button>
-                                            </div>
-                                            <div class="modal-body">
-                                                <h5>Are you sure you're ready to check off this job?</h5>
-                                                <button class="btn btn-info" onclick="SaveCheckChange(@job.JobId)">Confirm</button>
+                    <div class="col-md-3"></div>
+                    <div class="col-md-6">
+                        <div class="card text-white bg-primary mb-3" style="max-width: 20rem;">
+                            <div class="card-header">Jobs</div>
+                            <div class="card-body">
+                                @foreach (Job job in project.Jobs)
+                                {
+                                    <div id="confirmModal@(job.JobId)" class="modal">
+                                        <div class="modal-dialog" role="document">
+                                            <div class="modal-content">
+                                                <div class="modal-header">
+                                                    <h5 class="modal-title">Confirm Subtask Checkoff</h5>
+                                                    <button type="button" class="btn btn-secondary close@(job.JobId)" data-dismiss="modal" aria-label="Close">
+                                                        <span aria-hidden="true">&times;</span>
+                                                    </button>
+                                                </div>
+                                                <div class="modal-body">
+                                                    <h5>Are you sure you're ready to check off this job?</h5>
+                                                    <button class="btn btn-info" onclick="SaveCheckChange(@job.JobId)">Confirm</button>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
-                                </div>
-                                <div class="row">
-                                    <div class="col-md-2">
-                                        <input type="checkbox" id="confirmCheck@(job.JobId)" onclick="openConfirmationModal(@job.JobId)" asp-for="@job.IsComplete" />
+                                    <div class="row">
+                                        <div class="col-md-2">
+                                            <input type="checkbox" id="confirmCheck@(job.JobId)" onclick="openConfirmationModal(@job.JobId)" asp-for="@job.IsComplete" />
+                                        </div>
+                                        <div class="col-md-5">
+                                            <a style="color:white;" asp-action="EmployeeJobDetails" asp-controller="Employees" asp-route-id="@job.JobId">@job.Name</a>
+                                        </div>
+                                        <div class="col-md-5">
+                                            <p>@job.Deadline.Value.ToString("d")</p>
+                                        </div>
                                     </div>
-                                    <div class="col-md-5">
-                                        <a style="color:white;" asp-action="EmployeeJobDetails" asp-controller="Employees" asp-route-id="@job.JobId">@job.Name</a>
-                                    </div>
-                                    <div class="col-md-5">
-                                        <p>@job.Deadline.Value.ToString("d")</p>
-                                    </div>
-                                </div>
-                                <hr />
-                            }
+                                    <hr />
+                                }
+                            </div>
                         </div>
                     </div>
                 </div>
-            </div>
-            <br />
-        }
+                <br />
+            }
+        </div>
     </div>
 </div>
+
 
 <script>
     function openConfirmationModal(jobId) {

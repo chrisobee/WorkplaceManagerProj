@@ -34,6 +34,7 @@ namespace WorkplaceManager.Controllers
             await GetCoworkersAssignedJobs(indexVM);
             GetPercentageOfTasksDone(indexVM);
 
+            indexVM.Coworkers.Remove(indexVM.Employee);
             return View(indexVM);
         }
 

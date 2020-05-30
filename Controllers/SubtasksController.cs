@@ -126,34 +126,15 @@ namespace WorkplaceManager.Controllers
             return View(subtask);
         }
 
-        // GET: Subtasks/Delete/5
-        public async Task<IActionResult> Delete(int? id)
+        public async Task<IActionResult> DeleteSubtask(int id)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
+            var subtask = await _repo.Subtask.GetSubtaskById(id);
+            var jobId = subtask.JobId;
 
-            var subtask = await _context.Subtasks
-                .Include(s => s.Job)
-                .FirstOrDefaultAsync(m => m.SubtaskId == id);
-            if (subtask == null)
-            {
-                return NotFound();
-            }
+            _repo.Subtask.DeleteSubtask(subtask);
+            await _repo.Save();
 
-            return View(subtask);
-        }
-
-        // POST: Subtasks/Delete/5
-        [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int id)
-        {
-            var subtask = await _context.Subtasks.FindAsync(id);
-            _context.Subtasks.Remove(subtask);
-            await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
+            return RedirectToAction("Details", "Jobs", new { id = jobId });
         }
 
         private bool SubtaskExists(int id)

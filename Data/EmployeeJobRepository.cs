@@ -29,5 +29,12 @@ namespace WorkplaceManager.Data
             var jobs = results.Select(e => e.Job).ToList();
             return jobs;
         }
+
+        public async Task<Employee> GetAssignedEmployee(int jobId)
+        {
+            var result = await FindByCondition(e => e.JobId == jobId);
+            var employee = result.Select(e => e.Employee).FirstOrDefault();
+            return employee;
+        }
     }
 }

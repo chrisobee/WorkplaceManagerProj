@@ -10,5 +10,6 @@ namespace WorkplaceManager.ViewModels
     {
         public Job Job { get; set; }
         public List<Subtask> Subtasks { get; set; }
+        public Employee AssignedEmployee { get; set; }
     }
 }

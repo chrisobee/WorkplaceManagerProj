@@ -49,6 +49,7 @@ namespace WorkplaceManager.Controllers
             }
 
             detailsVM.Subtasks = await _repo.Subtask.GetAllSubtasks(detailsVM.Job.JobId);
+            detailsVM.AssignedEmployee = await _repo.EmployeeJob.GetAssignedEmployee(detailsVM.Job.JobId);
 
             return View(detailsVM);
         }
