@@ -21,6 +21,14 @@
         padding: 10px 25px 10px 15px;
         margin-top:10px;
     }
+    .modal{
+        background-color: rgba(0, 0, 0, .5);
+    }
+    .modal-content {
+        background-color: #EB6864;
+        border: none;
+        color: white;
+    }
 </style>
 
 <div class="row">
@@ -72,9 +80,25 @@
                         <div class="card-body">
                             @foreach (Job job in project.Jobs)
                             {
+                                <div id="confirmModal@(job.JobId)" class="modal">
+                                    <div class="modal-dialog" role="document">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <h5 class="modal-title">Confirm Subtask Checkoff</h5>
+                                                <button type="button" class="btn btn-secondary close@(job.JobId)" data-dismiss="modal" aria-label="Close">
+                                                    <span aria-hidden="true">&times;</span>
+                                                </button>
+                                            </div>
+                                            <div class="modal-body">
+                                                <h5>Are you sure you're ready to check off this job?</h5>
+                                                <button class="btn btn-info" onclick="SaveCheckChange(@job.JobId)">Confirm</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
                                 <div class="row">
                                     <div class="col-md-2">
-                                        <input type="checkbox" onclick="SaveCheckChange(@job.JobId)" asp-for="@job.IsComplete" />
+                                        <input type="checkbox" id="confirmCheck@(job.JobId)" onclick="openConfirmationModal(@job.JobId)" asp-for="@job.IsComplete" />
                                     </div>
                                     <div class="col-md-5">
                                         <a style="color:white;" asp-action="EmployeeJobDetails" asp-controller="Employees" asp-route-id="@job.JobId">@job.Name</a>
@@ -95,6 +119,27 @@
 </div>
 
 <script>
+    function openConfirmationModal(jobId) {
+        var btn = document.getElementById(`confirmCheck${jobId}`);
+
+        var modal = document.getElementById(`confirmModal${jobId}`);
+
+        var span = document.getElementsByClassName(`close${jobId}`)[0];
+
+        modal.style.display = "block";
+
+        span.onclick = function () {
+            modal.style.display = "none";
+
+            btn.checked = !btn.checked;
+        }
+
+        window.onclick = function (event) {
+            if (event.target == modal) {
+                modal.style.display = "none";
+            }
+        }
+    }
     function SaveCheckChange(jobId) {
         console.log(jobId);
         window.location.href = '@Url.Action("UpdateJob", "Jobs")' + '/' + jobId;
