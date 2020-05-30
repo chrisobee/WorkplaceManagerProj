@@ -138,7 +138,8 @@ namespace WorkplaceManager.Controllers
             var project = await _repo.Project.GetProjectById(id);
             _repo.Project.DeleteProject(project);
             await _repo.Save();
-            return RedirectToAction("Index", "Managers");
+
+            return RedirectToAction("Index", "Home");
         }
 
         private async Task<bool> ProjectExists(int id)
