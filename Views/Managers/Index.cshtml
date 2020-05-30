@@ -53,7 +53,7 @@
                         }
                         else
                         {
-                            <button type="button" class="btn btn-secondary" title="Assigned Jobs" data-toggle="popover" data-placement="right" data-content="@string.Join(",", employee.AssignedJobs.Select(j => j.Name))" data-original-title="Assigned Jobs">Assigned Jobs</button>
+                            <button type="button" class="btn btn-secondary" title="Assigned Jobs" data-toggle="popover" data-placement="right" data-content="@string.Join("\n", employee.AssignedJobs.Select(j => j.Name).ToList())" data-original-title="Assigned Jobs">Assigned Jobs</button>
                         }
                     </div>
                 </div>
@@ -76,7 +76,7 @@
                         <h5>@project.Deadline.Value.ToString("d")</h5>
                     </div>
                     <div class="progress">
-                        <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" aria-valuenow="'@project.PercentComplete'" aria-valuemin="0" aria-valuemax="100" style="width: @project.PercentComplete%"></div>
+                        <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" aria-valuenow="'@project.PercentComplete'" aria-valuemin="0" aria-valuemax="100" style="width: @project.PercentComplete%">@project.PercentComplete%</div>
                     </div>
                 </div>
                 <div class="col-md-3"></div>

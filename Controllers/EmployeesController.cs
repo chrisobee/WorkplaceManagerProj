@@ -61,13 +61,17 @@ namespace WorkplaceManager.Controllers
                 return NotFound();
             }
 
-            var job = await _repo.Job.GetJobById(id);
-            if(job == null)
+            JobDetailsVM detailsVM = new JobDetailsVM();
+            detailsVM.Job = await _repo.Job.GetJobById(id);
+
+            if(detailsVM.Job == null)
             {
                 return NotFound();
             }
 
-            return View(job);
+            detailsVM.Subtasks = await _repo.Subtask.GetAllSubtasks(detailsVM.Job.JobId);
+
+            return View(detailsVM);
         }
 
         // GET: Employees/Create

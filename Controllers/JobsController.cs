@@ -98,7 +98,7 @@ namespace WorkplaceManager.Controllers
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("JobId,Name,Deadline,IsComplete,ProjectId")] Job job)
+        public async Task<IActionResult> Edit(int id, Job job)
         {
             if (id != job.JobId)
             {

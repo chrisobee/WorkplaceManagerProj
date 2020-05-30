@@ -64,6 +64,15 @@ namespace WorkplaceManager.Controllers
             return RedirectToAction("Details", "Jobs", new { id = jobId });
         }
 
+        public async Task<IActionResult> ChangeCheckStatus(int? subtaskId)
+        {
+            var subtask = await _repo.Subtask.GetSubtaskById(subtaskId);
+            subtask.IsComplete = !subtask.IsComplete;
+            await _repo.Save();
+
+            return RedirectToAction("EmployeeJobDetails", "Employees", new { id = subtask.JobId });
+        }
+
         // GET: Subtasks/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {

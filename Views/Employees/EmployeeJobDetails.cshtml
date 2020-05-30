@@ -1,29 +1,122 @@
-﻿@model WorkplaceManager.Models.Job
+﻿@model WorkplaceManager.ViewModels.JobDetailsVM
 
 @{
     ViewData["Title"] = "EmployeeJobDetails";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h1>@Model.Name  Details</h1>
+<style>
+    .modal{
+        background-color: rgba(0, 0, 0, .5);
+    }
+    .modal-content {
+        background-color: #EB6864;
+        border:none;
+        color:white;
+    }
+</style>
 
-<div>
-    <hr />
-    <dl class="row">
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Name)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Name)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Deadline)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Deadline)
-        </dd>
-    </dl>
+<h1>Details of Job</h1>
+
+<div class="row">
+    <div class="col-md-6">
+        <hr />
+        <dl class="row">
+            <dt class="col-sm-2">
+                @Html.DisplayNameFor(model => model.Job.Name)
+            </dt>
+            <dd class="col-sm-10">
+                @Html.DisplayFor(model => model.Job.Name)
+            </dd>
+            <dt class="col-sm-2">
+                @Html.DisplayNameFor(model => model.Job.Deadline)
+            </dt>
+            <dd class="col-sm-10">
+                @Model.Job.Deadline.Value.ToShortDateString()
+            </dd>
+        </dl>
+    </div>
+    <div class="col-md-6">
+        <div class="card text-white bg-primary mb-3" style="max-width: 20rem;">
+            <div class="card-header">Subtasks</div>
+            <div class="card-body">
+                @if (Model.Subtasks.Count == 0)
+                {
+                    <p>No Subtasks Added!</p>
+                }
+                else
+                {
+                    @foreach (Subtask subtask in Model.Subtasks)
+                    {
+                        <div id="confirmModal@(subtask.SubtaskId)" class="modal">
+                            <div class="modal-dialog" role="document">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title">Confirm Subtask Checkoff</h5>
+                                        <button type="button" class="btn btn-secondary close@(subtask.SubtaskId)" data-dismiss="modal" aria-label="Close">
+                                            <span aria-hidden="true">&times;</span>
+                                        </button>
+                                    </div>
+                                    <div class="modal-body">
+                                        <h5>Are you sure you're ready to check off this subtask?</h5>
+                                        <a class="btn btn-info" asp-controller="Subtasks" asp-action="ChangeCheckStatus" asp-route-subtaskId="@subtask.SubtaskId">Confirm</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <div class="custom-control custom-checkbox">
+                                        @if (subtask.IsComplete == true)
+                                        {
+                                            <input type="checkbox" class="custom-control-input" id="confirmCheck@(subtask.SubtaskId)" onclick="changeCheckStatus(@subtask.SubtaskId)" checked="checked">
+                                            <label class="custom-control-label" for="confirmCheck@(subtask.SubtaskId)">Check this custom checkbox</label>
+                                        }
+                                        else
+                                        {
+                                            <input type="checkbox" class="custom-control-input" id="confirmCheck@(subtask.SubtaskId)" onclick="changeCheckStatus(@subtask.SubtaskId)">
+                                            <label class="custom-control-label" for="confirmCheck@(subtask.SubtaskId)">Check this custom checkbox</label>
+                                        }
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <p>@subtask.Name</p>
+                            </div>
+                        </div>
+                        <hr />
+                    }
+                }
+            </div>
+        </div>
+    </div>
 </div>
-<div>
-    <a asp-controller="Home" asp-action="Index">Back Home</a>
+<div class="row">
+        <a class="btn btn-info" asp-controller="Home" asp-action="Index">Back to Home</a>
 </div>
+
+<script>
+    function changeCheckStatus(subtaskId) {
+        var btn = document.getElementById(`confirmCheck${subtaskId}`);
+
+        var modal = document.getElementById(`confirmModal${subtaskId}`);
+
+        var span = document.getElementsByClassName(`close${subtaskId}`)[0];
+
+        modal.style.display = "block";
+
+        span.onclick = function () {
+            modal.style.display = "none";
+
+            btn.checked = !btn.checked;
+        }
+
+        window.onclick = function (event) {
+            if (event.target == modal) {
+                modal.style.display = "none";
+            }
+        }
+    }
+    
+</script>

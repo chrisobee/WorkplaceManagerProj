@@ -11,10 +11,11 @@
     .modal-content {
         background-color: #EB6864;
         border:none;
+        color:white;
     }
 </style>
 
-<h1>@Model.Job.Name</h1>
+<h1>Job Details</h1>
 
 <div class="row">
     <div class="col-md-6">
@@ -101,9 +102,9 @@
 </div>
 <div class="row">
     <div class="btn-group" role="group">
-        <a class="btn btn-info" asp-controller="Home" asp-action="Index">Back to List </a>
-        <a class="btn btn-info" asp-action="Edit" asp-route-id="@Model.Job.JobId"> Edit </a>
-        <a class="btn btn-info" asp-action="Delete" asp-route-id="@Model.Job.JobId"> Delete </a>
+        <a class="btn btn-info" asp-controller="Home" asp-action="Index">Back to List</a>
+        <a class="btn btn-info" asp-action="Edit" asp-route-id="@Model.Job.JobId">Edit</a>
+        <a class="btn btn-info" asp-action="Delete" asp-route-id="@Model.Job.JobId">Delete</a>
     </div>
 </div>
 
