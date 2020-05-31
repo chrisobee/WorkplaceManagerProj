@@ -34,7 +34,7 @@ namespace WorkplaceManager.Controllers
 
             indexVM.SeniorManager = await GetCurrentSeniorManager();
             indexVM.Branches = await _repo.Branch.GetAllBranches(indexVM.SeniorManager.SeniorManagerId);
-            indexVM.Managers = await _repo.Manager.GetAllManagers(GetBranchIds(indexVM));
+
 
             return View(indexVM);
         }
@@ -104,9 +104,10 @@ namespace WorkplaceManager.Controllers
 
                 //Creating Manager
                 createVM.Manager.BranchId = createVM.Branch.BranchId;
-                await CreateManager(createVM.Manager);
+                string randomInts = GetRandomIntsForPassword();
+                await CreateManager(createVM.Manager, randomInts);
 
-                return RedirectToAction("Index", "Home");
+                return RedirectToAction("DetailsForManager", new { managerId = createVM.Manager.ManagerId, randomInts });
             }
             return View(createVM);
         }
@@ -220,10 +221,9 @@ namespace WorkplaceManager.Controllers
             SeniorManager seniorManager = await _repo.SeniorManager.GetSeniorManager(userId);
             return seniorManager;
         }
-        public async Task CreateManager(Manager manager)
+        public async Task CreateManager(Manager manager, string randomInts)
         {
             _repo.Manager.CreateManager(manager);
-            string randomInts = GetRandomIntsForPassword();
             await AddManagerIdentity(manager, randomInts);
             await _repo.Save();
         }
@@ -261,14 +261,12 @@ namespace WorkplaceManager.Controllers
             return randomInts;
         }
 
-        public List<int?> GetBranchIds(SeniorManagerIndexVM indexVM)
+        public async Task SetBranchesAssignedManagers(SeniorManagerIndexVM indexVM)
         {
-            List<int?> branchIds = new List<int?>();
             foreach(Branch branch in indexVM.Branches)
             {
-                branchIds.Add(branch.BranchId);
+                branch.AssignedManager = await _repo.Manager.Get
             }
-            return branchIds;
         }
     }
 }

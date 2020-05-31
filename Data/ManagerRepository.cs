@@ -38,5 +38,12 @@ namespace WorkplaceManager.Data
             var managers = results.ToList();
             return managers;
         }
+
+        public async Task<Manager> GetManagerByBranchId(int? branchId)
+        {
+            var result = await FindByCondition(m => m.BranchId == branchId);
+            var manager = result.FirstOrDefault();
+            return manager;
+        }
     }
 }

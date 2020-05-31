@@ -14,6 +14,8 @@ namespace WorkplaceManager.Models
         [JsonProperty(PropertyName = "id")]
         public int BranchId { get; set; }
         public string Name { get; set; }
+        [NotMapped]
+        public Manager AssignedManager { get; set; }
 
         [ForeignKey("SeniorManager")]
         public int SeniorManagerId { get; set; }

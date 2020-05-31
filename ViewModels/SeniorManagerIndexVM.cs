@@ -10,6 +10,5 @@ namespace WorkplaceManager.ViewModels
     {
         public SeniorManager SeniorManager { get; set; }
         public List<Branch> Branches { get; set; }
-        public List<Manager> Managers { get; set; }
     }
 }
