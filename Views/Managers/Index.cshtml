@@ -5,6 +5,7 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 <style>
     .projectSection{
         border-width:2px; 
@@ -26,6 +27,9 @@
     .modal-content {
         background-color: #EB6864;
         border:none;
+    }
+    .checked{
+        color: #369;
     }
 </style>
 
@@ -130,6 +134,27 @@
                                             {
                                                 <input type="checkbox" class="custom-control-input" id="taskComplete" checked="checked" disabled="">
                                                 <label style="color:white;" class="custom-control-label" for="taskComplete">Complete</label>
+                                                <br />
+                                                @if (job.Quality == 0)
+                                                {
+                                                    for (int i = 1; i < 6; i++)
+                                                    {
+                                                        <a style="color:white;" asp-action="SetQualityOfJob" asp-controller="Jobs" asp-route-jobId="@job.JobId" asp-route-rating="@i" class="fa fa-star"></a>
+                                                    }
+                                                }
+                                                else
+                                                {
+                                                    int uncheckedStars = 5 - job.Quality;
+                                                    for (int i = 0; i < job.Quality; i++)
+                                                    {
+                                                        <a asp-action="SetQualityOfJob" asp-controller="Jobs" asp-route-jobId="@job.JobId" asp-route-rating="@i" class="fa fa-star checked"></a>
+                                                    }
+                                                    for (int i = 0; i < uncheckedStars; i++)
+                                                    {
+                                                        <a style="color:white;" asp-action="SetQualityOfJob" asp-controller="Jobs" asp-route-jobId="@job.JobId" asp-route-rating="@i" class="fa fa-star"></a>
+                                                    }
+                                                }
+
                                             }
                                             else
                                             {

@@ -129,6 +129,16 @@ namespace WorkplaceManager.Controllers
             return View(job);
         }
 
+        //Method to rate quality of job
+        public async Task<IActionResult> SetQualityOfJob(int jobId, int rating)
+        {
+            var job = await _repo.Job.GetJobById(jobId);
+            job.Quality = rating;
+            await _repo.Save();
+
+            return RedirectToAction("Index", "Home");
+        }
+
         // GET: Jobs/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
