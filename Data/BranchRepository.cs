@@ -25,7 +25,7 @@ namespace WorkplaceManager.Data
             return branches;
         }
 
-        public async Task<Branch> GetBranchById(int branchId)
+        public async Task<Branch> GetBranchById(int? branchId)
         {
             var result = await FindByCondition(b => b.BranchId == branchId);
             var branch = result.Include(b => b.SeniorManager).SingleOrDefault();
