@@ -202,6 +202,7 @@ namespace WorkplaceManager.Controllers
             foreach(Project project in indexVM.Projects)
             {
                 project.Jobs = await _repo.Job.GetAllJobs(project.ProjectId);
+                project.Jobs = project.Jobs.OrderBy(j => j.Deadline).ToList();
             }
         }
 

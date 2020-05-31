@@ -114,6 +114,17 @@
                                             </div>
                                         </div>
                                     </div>
+                                    @if (Model.Employee.AssignedJobs.Contains(job))
+                                    {
+                                        <div class="row">
+                                            <div class="col-md-1"></div>
+                                            <div class="col-md-8">
+                                                <span class="fa fa-star checked"> Assigned Task</span>
+                                            </div>
+                                            <div class="col-md-3"></div>
+                                        </div>
+                                    }
+
                                     <div class="row">
                                         <div class="col-md-2">
                                             <input type="checkbox" id="confirmCheck@(job.JobId)" onclick="openConfirmationModal(@job.JobId)" asp-for="@job.IsComplete" />

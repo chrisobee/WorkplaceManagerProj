@@ -263,6 +263,7 @@ namespace WorkplaceManager.Controllers
                 {
                     indexVM.Jobs = indexVM.Jobs.Concat(project.Jobs).ToList();
                 }
+                project.Jobs = project.Jobs.OrderBy(j => j.Deadline).ToList();
             }
         }
 
