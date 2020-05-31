@@ -34,7 +34,7 @@ namespace WorkplaceManager.Controllers
 
             indexVM.SeniorManager = await GetCurrentSeniorManager();
             indexVM.Branches = await _repo.Branch.GetAllBranches(indexVM.SeniorManager.SeniorManagerId);
-
+            await SetBranchesAssignedManagers(indexVM);
 
             return View(indexVM);
         }
@@ -265,7 +265,7 @@ namespace WorkplaceManager.Controllers
         {
             foreach(Branch branch in indexVM.Branches)
             {
-                branch.AssignedManager = await _repo.Manager.Get
+                branch.AssignedManager = await _repo.Manager.GetManagerByBranchId(branch.BranchId);
             }
         }
     }

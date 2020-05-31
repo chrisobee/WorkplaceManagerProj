@@ -16,10 +16,10 @@
 
 <div class="container">
     <div class="row">
-        <div class="col-md-5">
+        <div class="col-md-2">
             <h1>Branches</h1>
             <a style="margin-bottom: 10px;" class="btn btn-info" asp-action="CreateBranch">Add New Branch</a>
-            @if (Model.Managers.Count == 0)
+            @if (Model.Branches.Count == 0)
             {
                 <div class="row employeeSection">
                     <h5>No Managers or Branches Added Yet!</h5>
@@ -27,17 +27,18 @@
             }
             else
             {
-                @foreach (Manager manager in Model.Managers)
+                @foreach (Branch branch in Model.Branches)
                 {
                     <div class="row employeeSection">
                         <div>
-                            <h6>@manager.FirstName</h6>
+                            <h6 style="white-space:pre-line">
+                                @branch.AssignedManager.FirstName
+                                <a style="color:black;" asp-action="Details" asp-controller="Branches" asp-route-id="@branch.BranchId">@branch.Name</a>
+                            </h6>
+                            
                         </div>
 
-                        <br />
-
                         <div>
-                            <a class="btn btn-info" asp-action="Details" asp-controller="Branches" asp-route-id="@Model.Branches.Where(b => b.BranchId == manager.BranchId).Select(b => b.BranchId).FirstOrDefault()"> @Model.Branches.Where(b => b.BranchId == manager.BranchId).Select(b => b.Name).FirstOrDefault()</a>
                         </div>
                     </div>
                     <br />
@@ -45,7 +46,7 @@
             }
         </div>
         <div class="col-md-1"></div>
-        <div class="col-md-6">
+        <div class="col-md-10">
 
         </div>
     </div>
