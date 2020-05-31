@@ -1,28 +1,51 @@
-﻿@model WorkplaceManager.Models.SeniorManager
+﻿@model WorkplaceManager.ViewModels.SeniorManagerIndexVM
 
 @{
     ViewData["Title"] = "Index";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
+<style>
+    .employeeSection{
+        border-width:2px;
+        border-style:solid;
+        border-color: #EB6864;
+        border-radius: 15px;
+        padding: 10px 25px 10px 15px;
+    }
+</style>
 
-<h1>Index</h1>
+<div class="container">
+    <div class="row">
+        <div class="col-md-5">
+            <h1>Branches</h1>
+            <a style="margin-bottom: 10px;" class="btn btn-info" asp-action="CreateEmployee">Add New Employee</a>
+            @if (Model.Managers.Count == 0)
+            {
+                <div class="row employeeSection">
+                    <h5>No Managers or Branches Added Yet!</h5>
+                </div>
+            }
+            else
+            {
+                @foreach (Manager manager in Model.Managers)
+                {
+                    <div class="row employeeSection">
+                        <div>
+                            <h6>@manager.FirstName</h6>
+                        </div>
+                        <br />
+                        <div>
+                            <h6>@Model.Branches.Where(b => b.BranchId == manager.BranchId).Select(b => b.Name).FirstOrDefault()</h6>
+                        </div>
+                    </div>
+                    <br />
+                }
+            }
+        </div>
+        <div class="col-md-1"></div>
+        <div class="col-md-6">
 
-<p>
-    <a asp-action="Create">Create New</a>
-</p>
-<table class="table">
-    <thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.FirstName)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.IdentityUser)
-            </th>
-            <th></th>
-        </tr>
-    </thead>
-    <tr>
-        <td><a class="btn btn-primary" asp-action="CreateManager"></a></td>
-    </tr>
-</table>
+        </div>
+    </div>
+</div>
+

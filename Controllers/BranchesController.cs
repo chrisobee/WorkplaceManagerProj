@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -8,6 +9,7 @@ using Microsoft.EntityFrameworkCore;
 using WorkplaceManager.Contracts;
 using WorkplaceManager.Data;
 using WorkplaceManager.Models;
+using WorkplaceManager.ViewModels;
 
 namespace WorkplaceManager.Controllers
 {
@@ -39,28 +41,7 @@ namespace WorkplaceManager.Controllers
             return View(branch);
         }
 
-        // GET: Branches/Create
-        public IActionResult Create()
-        {
-            return View();
-        }
-
-        // POST: Branches/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to, for 
-        // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(Branch branch)
-        {
-            if (ModelState.IsValid)
-            {
-                _context.Add(branch);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
-            }
-            ViewData["SeniorManagerId"] = new SelectList(_context.SeniorManagers, "SeniorManagerId", "SeniorManagerId", branch.SeniorManagerId);
-            return View(branch);
-        }
+        
 
         // GET: Branches/Edit/5
         public async Task<IActionResult> Edit(int? id)
@@ -152,6 +133,14 @@ namespace WorkplaceManager.Controllers
             {
                 return false;
             }
+        }
+
+        //HELPER METHODS **
+        public async Task<SeniorManager> GetCurrentUser()
+        {
+            var userId = this.User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var seniorManager = await _repo.SeniorManager.GetSeniorManager(userId);
+            return seniorManager;
         }
     }
 }

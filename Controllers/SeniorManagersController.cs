@@ -10,6 +10,7 @@ using Microsoft.EntityFrameworkCore;
 using WorkplaceManager.Contracts;
 using WorkplaceManager.Data;
 using WorkplaceManager.Models;
+using WorkplaceManager.ViewModels;
 
 namespace WorkplaceManager.Controllers
 {
@@ -29,8 +30,13 @@ namespace WorkplaceManager.Controllers
         // GET: SeniorManagers
         public async Task<IActionResult> Index()
         {
-            var seniorManager = await GetCurrentSeniorManager();
-            return View(seniorManager);
+            SeniorManagerIndexVM indexVM = new SeniorManagerIndexVM();
+
+            indexVM.SeniorManager = await GetCurrentSeniorManager();
+            indexVM.Branches = await _repo.Branch.GetAllBranches(indexVM.SeniorManager.SeniorManagerId);
+            indexVM.Managers = await _repo.Manager.GetAllManagers(GetBranchIds(indexVM));
+
+            return View(indexVM);
         }
 
         // GET: SeniorManagers/Details/5
@@ -70,6 +76,39 @@ namespace WorkplaceManager.Controllers
                 return RedirectToAction(nameof(Index));
             }
             return View(seniorManager);
+        }
+
+        // GET: Branches/Create
+        public async Task<IActionResult> CreateBranch()
+        {
+            BranchCreateVM createVM = new BranchCreateVM();
+            var seniorManager = await GetCurrentSeniorManager();
+            ViewBag.seniorManagerId = seniorManager.SeniorManagerId;
+
+            return View(createVM);
+        }
+
+        // POST: Branches/Create
+        // To protect from overposting attacks, enable the specific properties you want to bind to, for 
+        // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> CreateBranch(BranchCreateVM createVM, int seniorManagerId)
+        {
+            if (ModelState.IsValid)
+            {
+                //Creating Branch
+                createVM.Branch.SeniorManagerId = seniorManagerId;
+                _repo.Branch.CreateBranch(createVM.Branch);
+                await _repo.Save();
+
+                //Creating Manager
+                createVM.Manager.BranchId = createVM.Branch.BranchId;
+                await CreateManager(createVM.Manager);
+
+                return RedirectToAction("Index", "Home");
+            }
+            return View(createVM);
         }
 
         // GET: SeniorManagers/Edit/5
@@ -163,23 +202,7 @@ namespace WorkplaceManager.Controllers
                 return false;
             }
         }
-
-        //GET: Method to create manager
-        public async Task<IActionResult> CreateManager()
-        {
-            return View();
-        }
-
-        [HttpPost]
-        public async Task<IActionResult> CreateManager(Manager manager)
-        {
-            _repo.Manager.CreateManager(manager);
-            string randomInts = GetRandomIntsForPassword();
-            await AddManagerIdentity(manager, randomInts);
-            await _repo.Save();
-
-            return RedirectToAction("DetailsForManager", new { managerId = manager.ManagerId, randomInts });
-        }
+        
 
         //GET: DetailsForManager
         public async Task<IActionResult> DetailsForManager(int? managerId, string randomInts)
@@ -197,6 +220,14 @@ namespace WorkplaceManager.Controllers
             SeniorManager seniorManager = await _repo.SeniorManager.GetSeniorManager(userId);
             return seniorManager;
         }
+        public async Task CreateManager(Manager manager)
+        {
+            _repo.Manager.CreateManager(manager);
+            string randomInts = GetRandomIntsForPassword();
+            await AddManagerIdentity(manager, randomInts);
+            await _repo.Save();
+        }
+
         public async Task AddManagerIdentity(Manager manager, string randomInts)
         {
             //Sets Manager email with Manager name
@@ -228,6 +259,16 @@ namespace WorkplaceManager.Controllers
                 randomInts += tempNum.ToString();
             }
             return randomInts;
+        }
+
+        public List<int?> GetBranchIds(SeniorManagerIndexVM indexVM)
+        {
+            List<int?> branchIds = new List<int?>();
+            foreach(Branch branch in indexVM.Branches)
+            {
+                branchIds.Add(branch.BranchId);
+            }
+            return branchIds;
         }
     }
 }

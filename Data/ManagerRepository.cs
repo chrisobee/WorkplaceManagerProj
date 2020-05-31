@@ -31,5 +31,12 @@ namespace WorkplaceManager.Data
             var manager = result.Include(m => m.IdentityUser).SingleOrDefault();
             return manager;
         }
+
+        public async Task<List<Manager>> GetAllManagers(List<int?> branchIds)
+        {
+            var results = await FindByCondition(m => branchIds.Contains(m.BranchId));
+            var managers = results.ToList();
+            return managers;
+        }
     }
 }

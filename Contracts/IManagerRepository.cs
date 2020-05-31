@@ -13,6 +13,7 @@ namespace WorkplaceManager.Contracts
         void DeleteManager(Manager manager);
         Task<Manager> GetManagerById(int? managerId);
         Task<Manager> GetManagerByUserId(string userId);
+        Task<List<Manager>> GetAllManagers(List<int?> branchId);
 
     }
 
