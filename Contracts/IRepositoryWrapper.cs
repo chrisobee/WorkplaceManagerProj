@@ -15,6 +15,7 @@ namespace WorkplaceManager.Contracts
         IProjectRepository Project { get; }
         IBranchRepository Branch { get; }
         IEmployeeJobRepository EmployeeJob { get; }
+        IQualityOfWorkRepository QualityOfWork { get; }
         Task Save();
     }
 }

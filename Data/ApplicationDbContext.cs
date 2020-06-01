@@ -23,6 +23,7 @@ namespace WorkplaceManager.Data
         public DbSet<Job> Jobs { get; set; }
         public DbSet<EmployeeJob> EmployeeJobs { get; set; }
         public DbSet<Subtask> Subtasks { get; set; }
+        public DbSet<QualityOfWork> QualityOfWorks { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder)
         {

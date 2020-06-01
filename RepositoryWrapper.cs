@@ -15,6 +15,7 @@ namespace WorkplaceManager
         private IProjectRepository _project;
         private IBranchRepository _branch;
         private IEmployeeJobRepository _employeeJob;
+        private IQualityOfWorkRepository _qualityOfWork;
 
         public ISeniorManagerRepository SeniorManager
         {
@@ -102,6 +103,17 @@ namespace WorkplaceManager
                     _employeeJob = new EmployeeJobRepository(_context);
                 }
                 return _employeeJob;
+            }
+        }
+        public IQualityOfWorkRepository QualityOfWork
+        {
+            get
+            {
+                if(_qualityOfWork == null)
+                {
+                    _qualityOfWork = new QualityOfWorkRepository(_context);
+                }
+                return _qualityOfWork;
             }
         }
 
