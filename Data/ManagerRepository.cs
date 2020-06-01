@@ -21,14 +21,14 @@ namespace WorkplaceManager.Data
         public async Task<Manager> GetManagerById(int? managerId)
         {
             var result = await FindByCondition(m => m.ManagerId == managerId);
-            var manager = result.Include(m => m.IdentityUser).SingleOrDefault();
+            var manager = result.Include(m => m.IdentityUser).Include(m => m.Branch).SingleOrDefault();
             return manager;
         }
 
         public async Task<Manager> GetManagerByUserId(string userId)
         {
             var result = await FindByCondition(m => m.IdentityUserId == userId);
-            var manager = result.Include(m => m.IdentityUser).SingleOrDefault();
+            var manager = result.Include(m => m.IdentityUser).Include(m => m.Branch).SingleOrDefault();
             return manager;
         }
 

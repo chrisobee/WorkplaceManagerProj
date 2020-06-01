@@ -39,8 +39,8 @@ namespace WorkplaceManager.Controllers
             indexVM.Manager = manager;
             indexVM.Employees = await _repo.Employee.GetAllEmployees(indexVM.Manager.ManagerId);
             indexVM.Projects = await _repo.Project.GetAllProjects(manager.ManagerId);
-            await SetEmployeesAssignedTasks(indexVM);
-            GetQualityOfWork(indexVM);
+            await SetEmployeesAssignedTasks(indexVM.Employees);
+            GetQualityOfWork(indexVM.Employees);
             await GetJobsForEachProject(indexVM);
             GetPercentageOfTasksDone(indexVM);
 
@@ -241,9 +241,9 @@ namespace WorkplaceManager.Controllers
             return manager;
         }
 
-        public async Task SetEmployeesAssignedTasks(ManagerIndexVM indexVM)
+        public async Task SetEmployeesAssignedTasks(List<Employee> employees)
         {
-            foreach (Employee employee in indexVM.Employees)
+            foreach (Employee employee in employees)
             {
                 employee.AssignedJobs = await _repo.EmployeeJob.FindAssignedTasks(employee.EmployeeId);
             }
@@ -292,9 +292,9 @@ namespace WorkplaceManager.Controllers
             }
         }
 
-        public void GetQualityOfWork(ManagerIndexVM indexVM)
+        public void GetQualityOfWork(List<Employee> employees)
         {
-            foreach(Employee employee in indexVM.Employees)
+            foreach(Employee employee in employees)
             {
                 if(employee.AssignedJobs.Count == 0 || employee.AssignedJobs == null)
                 {
@@ -315,6 +315,37 @@ namespace WorkplaceManager.Controllers
                 double average = (actualRating / maxRating) * 100;
                 employee.QualityOfWork = Math.Round(average);
             }
+        }
+        public async Task<IActionResult> SendQualityResults(int managerId, int branchId, int projectId)
+        {
+            var project = await GetProject(projectId);
+            var manager = await _repo.Manager.GetManagerById(managerId);
+            var employees = await _repo.Employee.GetAllEmployees(manager.ManagerId);
+            await SetEmployeesAssignedTasks(employees);
+            GetQualityOfWork(employees);
+            double maxQuality = 0;
+            double actualQuality = 0;
+
+            foreach(Employee employee in employees)
+            {
+                maxQuality += 100;
+                actualQuality += employee.QualityOfWork;
+            }
+            var averageQualityOfWork = (actualQuality / maxQuality) * 100;
+
+            _repo.QualityOfWork.CreateQualityOfWork(Math.Round(averageQualityOfWork), branchId);
+            
+            project.IsComplete = true;
+            _repo.Project.UpdateProject(project);
+            await _repo.Save();
+
+            return RedirectToAction("Index", "Home");
+        }
+
+        public async Task<Project> GetProject(int projectId)
+        {
+            var project = await _repo.Project.GetProjectById(projectId);
+            return project;
         }
     }
 }

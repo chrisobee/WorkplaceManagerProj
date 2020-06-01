@@ -8,7 +8,7 @@ namespace WorkplaceManager.Contracts
 {
     public interface IQualityOfWorkRepository: IRepositoryBase<QualityOfWork>
     {
-        void CreateQualityOfWork(double averageQuality);
+        void CreateQualityOfWork(double averageQuality, int branchId);
         Task<List<QualityOfWork>> GetQualityOfWorks(int? branchId);
     }
 }

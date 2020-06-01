@@ -13,12 +13,13 @@ namespace WorkplaceManager.Data
         {
         }
 
-        public void CreateQualityOfWork(double averageQuality)
+        public void CreateQualityOfWork(double averageQuality, int branchId)
         {
             QualityOfWork quality = new QualityOfWork()
             {
                 Quality = averageQuality,
-                Timestamp = DateTime.Now.Date
+                Timestamp = DateTime.Now.Date,
+                BranchId = branchId
             };
             Create(quality);
         }
