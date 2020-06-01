@@ -5,27 +5,36 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 <style>
-    .employeeSection{
-        border-width:2px;
-        border-style:solid;
+    .employeeSection {
+        border-width: 2px;
+        border-style: solid;
         border-color: #EB6864;
         border-radius: 15px;
         padding: 10px 25px 10px 15px;
     }
-    .branchSection{
-        border-width:2px; 
-        border-style:solid; 
-        border-color: #EB6864; 
-        border-radius: 25px; 
+
+    .branchSection {
+        border-width: 2px;
+        border-style: solid;
+        border-color: #EB6864;
+        border-radius: 25px;
         padding: 12px 5px 5px 20px;
     }
 </style>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 
 <div class="container">
     <div class="row">
         <div class="col-md-2">
             <h1>Branches</h1>
             <a style="margin-bottom: 10px;" class="btn btn-info" asp-action="CreateBranch">Add New Branch</a>
+            <div class="row employeeSection">
+                <span class="fa fa-star checked" style="position:relative;right:-140px;"></span>
+                <div>
+                    <h5>You</h5>
+                    <a class="btn btn-info" asp-action="Edit" asp-controller="SeniorManagers" asp-route-id="@Model.SeniorManager.SeniorManagerId">Edit Info</a>
+                </div>
+            </div>
             @if (Model.Branches.Count == 0)
             {
                 <div class="row employeeSection">
@@ -52,7 +61,7 @@
         <div class="col-md-1"></div>
         <div class="col-md-9">
             <h1>Average Quality of Work</h1>
-            @foreach(Branch branch in Model.Branches)
+            @foreach (Branch branch in Model.Branches)
             {
                 <div class="row branchSection">
                     <div class="col-md-3">
@@ -103,7 +112,7 @@
             vAxis: { 'ticks': [0, 20, 40, 60, 80, 100] },
             hAxis: {
             format: 'M/d/yy',
-            gridlines: {'count': 50}}, 
+            gridlines: {'count': 50}},
             legend: { 'position': 'none' }
         };
 
