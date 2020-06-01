@@ -56,8 +56,8 @@
                             <button type="button" class="btn btn-secondary" title="Assigned Jobs" data-toggle="popover" data-placement="right" data-content="No Assigned Jobs!" data-original-title="Assigned Jobs">Assigned Jobs</button>
                         }
                         else
-                        { 
-                            <button type="button" class="btn btn-secondary" title="Assigned Jobs" data-toggle="popover" data-placement="right" data-content="@string.Join("\n", employee.AssignedJobs.Select(j => j.Name))" data-original-title="Assigned Jobs">Assigned Jobs</button>
+                        {
+                            <button type="button" class="btn btn-secondary" title="Assigned Jobs" data-toggle="popover" data-placement="right" data-content="@string.Join(",\n", employee.AssignedJobs.Select(j => j.Name))" data-original-title="Assigned Jobs">Assigned Jobs</button>
                         }
                     </div>
                 </div>

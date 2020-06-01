@@ -42,7 +42,7 @@ namespace WorkplaceManager.Areas.Identity.Pages.Account
 
         [BindProperty]
         public InputModel Input { get; set; }
-        public SelectList Roles  { get; set; }
+        public string Role  { get; set; }
 
         public string ReturnUrl { get; set; }
 
@@ -66,7 +66,6 @@ namespace WorkplaceManager.Areas.Identity.Pages.Account
             [Compare("Password", ErrorMessage = "The password and confirmation password do not match.")]
             public string ConfirmPassword { get; set; }
 
-            [Required]
             public string Role { get; set; }
         }
 
@@ -74,14 +73,14 @@ namespace WorkplaceManager.Areas.Identity.Pages.Account
         {
             ReturnUrl = returnUrl;
             ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
-            //var roles = _roleManager.Roles;
-            Input.Role = "Senior Manager";
+            Role = "Senior Manager";
         }
 
         public async Task<IActionResult> OnPostAsync(string returnUrl = null)
         {
             returnUrl = returnUrl ?? Url.Content("~/");
             ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
+            Input.Role = "Senior Manager";
             if (ModelState.IsValid)
             {
                 var user = new IdentityUser { UserName = Input.Email, Email = Input.Email };

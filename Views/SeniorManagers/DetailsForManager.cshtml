@@ -5,10 +5,10 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h1>DetailsForManager</h1>
+<h1>Details For Manager</h1>
 
 <div>
-    <h4>Manager</h4>
+    <h3>Send this information to your manager!</h3>
     <hr />
     <dl class="row">
         <dt class = "col-sm-2">
@@ -38,6 +38,6 @@
     </dl>
 </div>
 <div>
-    <a class="btn btn-info" asp-action="Edit" asp-controller="Managers" asp-route-id="@Model.ManagerId">Edit</a> |
+    <a class="btn btn-info" asp-action="Edit" asp-controller="Managers" asp-route-id="@Model.ManagerId">Edit</a>
     <a class="btn btn-info" asp-action="Index" asp-controller="SeniorManagers">Back to Home</a>
 </div>

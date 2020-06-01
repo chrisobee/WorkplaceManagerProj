@@ -33,6 +33,10 @@ namespace WorkplaceManager.Controllers
             SeniorManagerIndexVM indexVM = new SeniorManagerIndexVM();
 
             indexVM.SeniorManager = await GetCurrentSeniorManager();
+            if(indexVM.SeniorManager == null)
+            {
+                return RedirectToAction("Create");
+            }
             indexVM.Branches = await _repo.Branch.GetAllBranches(indexVM.SeniorManager.SeniorManagerId);
             await SetBranchesAssignedManagers(indexVM);
             await SetBranchesQualityOfWorks(indexVM.Branches);
@@ -60,6 +64,8 @@ namespace WorkplaceManager.Controllers
         // GET: SeniorManagers/Create
         public IActionResult Create()
         {
+            var userId = this.User.FindFirstValue(ClaimTypes.NameIdentifier);
+            ViewBag.userId = userId;
             return View();
         }
 
@@ -68,10 +74,11 @@ namespace WorkplaceManager.Controllers
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(SeniorManager seniorManager)
+        public async Task<IActionResult> Create(SeniorManager seniorManager, string userId)
         {
             if (ModelState.IsValid)
             {
+                seniorManager.IdentityUserId = userId;
                 _repo.SeniorManager.CreateSeniorManager(seniorManager);
                 await _repo.Save();
                 return RedirectToAction(nameof(Index));
