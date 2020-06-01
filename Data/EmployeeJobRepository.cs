@@ -13,6 +13,13 @@ namespace WorkplaceManager.Data
         {
         }
 
+        public async Task<bool> CheckIfJobIsAssigned(int employeeId, int jobId)
+        {
+            var results = await FindByCondition(j => j.EmployeeId == employeeId && j.JobId == jobId);
+            var taskAlreadyAssigned = results.ToList();
+            return taskAlreadyAssigned.Count > 0;
+        }
+
         public void CreateEmployeeJob(int employeeId, int jobId)
         {
             EmployeeJob employeeJob = new EmployeeJob()

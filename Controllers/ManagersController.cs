@@ -35,15 +35,12 @@ namespace WorkplaceManager.Controllers
         {
             ManagerIndexVM indexVM = new ManagerIndexVM();
             var manager = await GetCurrentUser();
-            if(manager == null)
-            {
-                return RedirectToAction("Create");
-            }
 
             indexVM.Manager = manager;
             indexVM.Employees = await _repo.Employee.GetAllEmployees(indexVM.Manager.ManagerId);
             indexVM.Projects = await _repo.Project.GetAllProjects(manager.ManagerId);
             await SetEmployeesAssignedTasks(indexVM);
+            GetQualityOfWork(indexVM);
             await GetJobsForEachProject(indexVM);
             GetPercentageOfTasksDone(indexVM);
 
@@ -52,6 +49,10 @@ namespace WorkplaceManager.Controllers
 
         public async Task<IActionResult> AssignEmployeeJob(int employeeId, int jobId)
         {
+            if(await _repo.EmployeeJob.CheckIfJobIsAssigned(employeeId, jobId))
+            {
+                return RedirectToAction("Index", "Home");
+            }
             _repo.EmployeeJob.CreateEmployeeJob(employeeId, jobId);
             await _repo.Save();
             return RedirectToAction("Index", "Home");
@@ -288,6 +289,31 @@ namespace WorkplaceManager.Controllers
                 }
                 double result = (jobsComplete / totalJobs) * 100;
                 project.PercentComplete = (int)Math.Round(result);
+            }
+        }
+
+        public void GetQualityOfWork(ManagerIndexVM indexVM)
+        {
+            foreach(Employee employee in indexVM.Employees)
+            {
+                if(employee.AssignedJobs.Count == 0 || employee.AssignedJobs == null)
+                {
+                    continue;
+                }
+                double maxRating = 0;
+                double actualRating = 0;
+                foreach(Job job in employee.AssignedJobs)
+                {
+                    if(job.IsComplete == false || job.Quality == 0)
+                    {
+                        continue;
+                    }
+
+                    maxRating += 5;
+                    actualRating += job.Quality;
+                }
+                double average = (actualRating / maxRating) * 100;
+                employee.QualityOfWork = Math.Round(average);
             }
         }
     }

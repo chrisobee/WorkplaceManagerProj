@@ -11,5 +11,6 @@ namespace WorkplaceManager.Contracts
         void CreateEmployeeJob(int employeeId, int jobId);
         Task<List<Job>> FindAssignedTasks(int employeeId);
         Task<Employee> GetAssignedEmployee(int jobId);
+        Task<bool> CheckIfJobIsAssigned(int employeeId, int jobId);
     }
 }
