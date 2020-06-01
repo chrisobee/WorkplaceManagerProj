@@ -16,6 +16,8 @@ namespace WorkplaceManager.Models
         public string Name { get; set; }
         [NotMapped]
         public Manager AssignedManager { get; set; }
+        [NotMapped]
+        public List<QualityOfWork> QualityOfWorks { get; set; }
 
         [ForeignKey("SeniorManager")]
         public int SeniorManagerId { get; set; }

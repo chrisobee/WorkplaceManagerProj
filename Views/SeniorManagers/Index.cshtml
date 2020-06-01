@@ -12,6 +12,13 @@
         border-radius: 15px;
         padding: 10px 25px 10px 15px;
     }
+    .branchSection{
+        border-width:2px; 
+        border-style:solid; 
+        border-color: #EB6864; 
+        border-radius: 25px; 
+        padding: 12px 5px 5px 20px;
+    }
 </style>
 
 <div class="container">
@@ -32,7 +39,8 @@
                     <div class="row employeeSection">
                         <div>
                             <h6 style="white-space:pre-line">
-                                @branch.AssignedManager.FirstName
+                                @branch.AssignedManager.FirstName @branch.AssignedManager.LastName
+
                                 <a style="color:black;" asp-action="Details" asp-controller="Branches" asp-route-id="@branch.BranchId">@branch.Name</a>
                             </h6>
                         </div>
@@ -44,7 +52,67 @@
         <div class="col-md-1"></div>
         <div class="col-md-9">
             <h1>Average Quality of Work</h1>
+            @foreach(Branch branch in Model.Branches)
+            {
+                <div class="row branchSection">
+                    <div class="col-md-6">
+                        <h5>@branch.Name</h5>
+                    </div>
+                    <div class="col-md-6">
+                        <div id="chart_div@(branch.BranchId)"></div>
+                    </div>
+                </div>
+            }
         </div>
     </div>
 </div>
+<script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+<script>
+    //GOOGLE CHARTS API
+
+    // Load the Visualization API and the corechart package.
+    google.charts.load('current', { 'packages': ['corechart'] });
+
+    @foreach (Branch branch in Model.Branches)
+    {
+        // Set a callback to run when the Google Visualization API is loaded.
+        @:google.charts.setOnLoadCallback(drawChart@(branch.BranchId));
+        // Callback that creates and populates a data table,
+        // instantiates the pie chart, passes in the data and
+        // draws it.
+        <text>
+        function drawChart@(branch.BranchId)() {
+
+        // Create the data table.
+        var data = new google.visualization.DataTable();
+        data.addColumn('date', 'Date');
+        data.addColumn('number', 'Average Quality');
+            @for (int i = 0; i < branch.QualityOfWorks.Count; i++)
+            {
+                var year = branch.QualityOfWorks[i].Timestamp.Value.Year;
+                var month = branch.QualityOfWorks[i].Timestamp.Value.Month;
+                var day = branch.QualityOfWorks[i].Timestamp.Value.Day;
+                @: data.addRow([new Date(@year,@month,@day), @branch.QualityOfWorks[i].Quality]);
+            }
+
+        // Set chart options
+        var options = {
+            'title': 'Average Quality of Work in Branch',
+            'width': 400,
+            'height': 300,
+            vAxis: { 'ticks': [0, 20, 40, 60, 80, 100] },
+            hAxis: {
+            format: 'M/d/yy',
+            gridlines: {'count': 50}}, 
+            legend: { 'position': 'none' }
+        };
+
+        // Instantiate and draw our chart, passing in some options.
+        var chart = new google.visualization.ColumnChart(document.getElementById('chart_div@(branch.BranchId)'));
+        chart.draw(data, options);
+
+        }
+        </text>
+    }
+</script>
 
