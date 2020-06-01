@@ -77,14 +77,9 @@ namespace WorkplaceManager.Controllers
         }
 
         // GET: Managers/Edit/5
-        public async Task<IActionResult> Edit(int? id)
+        public async Task<IActionResult> Edit()
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var manager = await _repo.Manager.GetManagerById(id);
+            var manager = await GetCurrentUser();
             if (manager == null)
             {
                 return NotFound();

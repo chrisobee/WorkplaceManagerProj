@@ -121,14 +121,9 @@ namespace WorkplaceManager.Controllers
         }
 
         // GET: SeniorManagers/Edit/5
-        public async Task<IActionResult> Edit(int? id)
+        public async Task<IActionResult> Edit()
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var seniorManager = await _repo.SeniorManager.GetSeniorManagerById(id);
+            var seniorManager = await GetCurrentSeniorManager();
             if (seniorManager == null)
             {
                 return NotFound();
