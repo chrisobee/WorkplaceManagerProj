@@ -307,8 +307,15 @@ namespace WorkplaceManager.Controllers
                     maxRating += 5;
                     actualRating += job.Quality;
                 }
-                double average = (actualRating / maxRating) * 100;
-                employee.QualityOfWork = Math.Round(average);
+                if(maxRating == 0)
+                {
+                    employee.QualityOfWork = 0;
+                }
+                else
+                {
+                    double average = (actualRating / maxRating) * 100;
+                    employee.QualityOfWork = Math.Round(average);
+                }
             }
         }
         public async Task<IActionResult> SendQualityResults(int managerId, int branchId, int projectId)

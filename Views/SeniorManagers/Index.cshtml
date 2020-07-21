@@ -62,16 +62,25 @@
         <div class="col-md-1"></div>
         <div class="col-md-9">
             <h1>Average Quality of Work</h1>
-            @foreach (Branch branch in Model.Branches)
+            @if (Model.Branches.Count == 0)
             {
-                <div class="row branchSection">
-                    <div class="col-md-3">
-                        <h4><a style="color:black" asp-action="Edit" asp-controller="Branches" asp-route-id="@branch.BranchId">@branch.Name</a></h4>
-                    </div>
-                    <div class="col-md-9">
-                        <div style="width:100%;" id="chart_div@(branch.BranchId)"></div>
-                    </div>
+                <div>
+                    <h2>No Branches Added Yet!</h2>
                 </div>
+            }
+            else
+            {
+                foreach (Branch branch in Model.Branches)
+                {
+                    <div class="row branchSection">
+                        <div class="col-md-3">
+                            <h4><a style="color:black" asp-action="Edit" asp-controller="Branches" asp-route-id="@branch.BranchId">@branch.Name</a></h4>
+                        </div>
+                        <div class="col-md-9">
+                            <div style="width:100%;" id="chart_div@(branch.BranchId)"></div>
+                        </div>
+                    </div>
+                }
             }
         </div>
     </div>
